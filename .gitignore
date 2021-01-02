@@ -1,0 +1,11 @@
+Temp/
+obj/
+Library/
+Assets/Audio/
+Assets/MATERIAL/
+Assets/Model/
+Assets/Scene/
+Assets/Audio.meta
+Assets/MATERIAL.meta
+Assets/Model.meta
+Assets/Scene.meta
