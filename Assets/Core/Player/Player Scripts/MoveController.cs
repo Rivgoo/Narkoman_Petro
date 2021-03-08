@@ -2,6 +2,7 @@ using UnityEngine;
 using Keys = PlayerInput.InputKeys.CheckMovementKey; 
 using Random = UnityEngine.Random;
 using PlayerData;
+using Objects;
 
 namespace Player
 {

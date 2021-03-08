@@ -74,7 +74,9 @@ namespace PlayerData
 		[Header("Forces")]
 		public float ForceSmallObject;
 		public float Force;
-		public CollisionFlags Collision;
+		
+		[Header("Info")]
+		[ReadOnly] public CollisionFlags Collision;
 	}
 	
 	[System.Serializable]

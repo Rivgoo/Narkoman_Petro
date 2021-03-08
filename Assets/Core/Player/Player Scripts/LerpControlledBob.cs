@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Player
 {
     [Serializable]
-    [SerializeField]
     public class LerpControlledBob
     {
     	[SerializeField]

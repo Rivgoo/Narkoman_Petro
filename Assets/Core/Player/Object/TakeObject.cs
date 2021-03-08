@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using Mouse = PlayerInput.InputKeys.CheckMouseButton; 
 using PlayerInput;
+using Player;
 
-namespace Player
+namespace Objects
 {
 	public class TakeObject : MonoBehaviour
 	{	
