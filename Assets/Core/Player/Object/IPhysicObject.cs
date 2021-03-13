@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using PlayerData;
 
 namespace Objects
 {
@@ -6,7 +7,9 @@ namespace Objects
 	{
 		Vector3 PositionTakedObject { get; }
 		float MaxDownCameraRotation { get; }
-		
-		bool TakeOff { get; }
+		Rigidbody Rigidbody { get; set; }
+		PlayerSpeeds Speeds { get; } 
+		Vector3 MaxVectorTorque { get; }
+		bool IsTake { get; set; }
 	}
 }

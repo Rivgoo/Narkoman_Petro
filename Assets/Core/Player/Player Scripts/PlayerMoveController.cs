@@ -6,26 +6,21 @@ using Objects;
 
 namespace Player
 {
-    [RequireComponent(typeof (CharacterController))]
-    internal class MoveController : MonoBehaviour
+    internal class PlayerMoveController : MonoBehaviour
     {
-    	[Header("Player Move Settings")]
-    	[SerializeField] private MovementPlayerData _movementPlayer = new MovementPlayerData();
-    	
-    	[Header("Camera Settings")]
-    	[SerializeField] private MovementCameraData _movementCamera = new MovementCameraData();
-              
-        [Header("Camera Rotation")]
-        [SerializeField] private MouseLook _mouseLook; 
+		private MovementPlayerData _movementPlayer;
+    	private MovementCameraData _movementCamera;
 	
-        [Header("Player Sound")]
-        [SerializeField] private PlayerSound _sound;
+        private PlayerSound _sound;
+        private EndurancePlayer _endurance;
         
-        
-        [Header("Player Characteristics")]
-        [SerializeField] private EndurancePlayer _endurance;
-        
-        [SerializeField] private TakeObject _takeObject;
+        public void Init(MovementPlayerData movementPlayer, MovementCameraData movementCamera, PlayerSound sound, EndurancePlayer endurance)
+        {
+        	_movementPlayer = movementPlayer;
+        	_movementCamera = movementCamera;
+        	_sound = sound;
+        	_endurance = endurance;
+        }
         
 		#region Squatting 
 		private void Crouch()
@@ -96,36 +91,21 @@ namespace Player
         #endregion
         
         #region System
-        
-        private void InitScripts()
-        {
-        	_takeObject.SetCameraRotationScripts(_mouseLook);
-        }
-        
         private void Start()
-        { 
-        	_movementCamera.OriginalCameraPosition = _movementCamera.Camera.localPosition;
-            _movementCamera.Shake.HeadBob.Setup(_movementCamera.Camera, _movementPlayer.Step.StepInterval);
-            
-			_mouseLook.Init(transform , _movementCamera.Camera);
-			
-			MouseLook.HideCursor();
-			InitScripts();
+        {
+        	_movementPlayer.Gravity.OriginalWorldGravity = Physics.gravity;
         }
         
         private void Update()
         {   
         	CheckMovePlayer(); 
         	CheckCrouch(); 
-        	CheckSpeedUp();  	 	
-        	HeadBob();        	
-            RotateView();
+        	CheckRun();  	 	  	
             EndJumping();
             CheckJump();
             ChooseCurrentTypeSpeed();
             NullDirectionY();
             PreviouslyGrounded();
-            MouseLook.CursoreLockUpdate(); //TODO: When will Add Menu UI then delete this method
         } 
         
         private void NullDirectionY()
@@ -143,24 +123,21 @@ namespace Player
         
         private void FixedUpdate()
         {  
+        	UpdateWorldGravity();
             GetPlayerInput();
             
             SetMoveDirection();
             Crouch();
             Jump();
-            
             Move();
-
-            ProgressStepCycle(_movementPlayer.Speeds.CurrentSpeed);
-            UpdateCameraPosition(_movementPlayer.Speeds.CurrentSpeed);  
             
             UpdateValueEndurance();    
         }
         #endregion
         
-        private void CheckSpeedUp()
+        private void CheckRun()
         {
-        	_endurance.CheckKeyDownSpeedUp(ref _movementPlayer.State.IsRun);
+        	_endurance.CheckKeyDownRun(ref _movementPlayer.State.IsRun);
         	_movementPlayer.State.IsRun = _movementPlayer.State.IsRun && !_movementPlayer.State.IsCrouch;
         	
         }
@@ -176,26 +153,6 @@ namespace Player
             }
         }
         
-        private void HeadBob()
-        {
-        	if (!_movementPlayer.State.IsMovePlayer)
-        	{
-        		_movementCamera.Shake.HeadBob.SetTypeBob(TypeBob.Stay);
-        	} 
-        	else if (_movementPlayer.State.IsWalking)
-        	{
-        		_movementCamera.Shake.HeadBob.SetTypeBob(TypeBob.Walk);
-        	} 
-        	else if (_movementPlayer.State.IsRun) 
-        	{
-        		_movementCamera.Shake.HeadBob.SetTypeBob(TypeBob.Run);
-        	} 
-        	else if (_movementPlayer.State.IsCrouch)
-        	{
-        		_movementCamera.Shake.HeadBob.SetTypeBob(TypeBob.Crouch);
-        	} 
-        }
-        
         private void SetMoveDirection()
         {          
             // always move along the camera forward as it is the direction that it being aimed at
@@ -206,22 +163,14 @@ namespace Player
             
             desiredMove = Vector3.ProjectOnPlane(desiredMove, _movementPlayer.Move.HitInfo.normal).normalized;
             
-            _movementPlayer.Move.Direction.x = desiredMove.x * _movementPlayer.Speeds.CurrentSpeed;
-            _movementPlayer.Move.Direction.z = desiredMove.z * _movementPlayer.Speeds.CurrentSpeed;
+            _movementPlayer.Move.Direction.x = desiredMove.x * _movementPlayer.SpeedsSettings.CurrentSpeed;
+            _movementPlayer.Move.Direction.z = desiredMove.z * _movementPlayer.SpeedsSettings.CurrentSpeed;
         }
 		
         private void PlayLandingSound()
         {
         	_sound.PlayLandingSound();
             _movementPlayer.Step.NextStep = _movementPlayer.Step.StepCycle + .5f;
-        }
-        
-        private void PlayFootStepAudio()
-        {
-            if (_movementPlayer.CharacterController.isGrounded)
-            {
-               _sound.PlayFootStepAudio();
-            }
         } 
 		
         private void Move()
@@ -269,74 +218,23 @@ namespace Player
             	{
             		_endurance.PlayerRun();
             	}
-            	else if (!Keys.SpeedUp() && !_movementPlayer.State.IsCrouch) // Don't key down Speed Up
+            	else if (!Keys.Run() && !_movementPlayer.State.IsCrouch) // Don't key down Speed Up
             	{
             		_endurance.RecoveryEnduranceWalk();
             	}  	
             }
-        	else if(!_movementPlayer.State.IsCrouch && !Keys.SpeedUp())
+        	else if(!_movementPlayer.State.IsCrouch && !Keys.Run())
         	{
         		_endurance.RecoveryEnduranceDefoult();
         	}
-        }
-                 
-        private void ProgressStepCycle(float speed) // old method first person controller
-        {
-            if (_movementPlayer.State.IsMovePlayer && (_movementPlayer.Move.Input.x != 0 || _movementPlayer.Move.Input.y != 0))
-            {
-            	_movementPlayer.Step.StepCycle += (_movementPlayer.CharacterController.velocity.magnitude + ( speed * (_movementPlayer.State.IsCrouch ? _movementPlayer.Step.SquattingStepLenghten : _movementPlayer.State.IsWalking ? _movementPlayer.Step.WalkStepLenghten : _movementPlayer.Step.RunStepLenghten))) * Time.fixedDeltaTime;
-            }
-
-            if (!(_movementPlayer.Step.StepCycle > _movementPlayer.Step.NextStep))
-            {
-                return;
-            }
-
-            _movementPlayer.Step.NextStep = _movementPlayer.Step.StepCycle + _movementPlayer.Step.StepInterval;
-
-            PlayFootStepAudio();
-        }
-        
- 		private void UpdateCameraPosition(float speed)
-        {
-            var tempCameraPosition = Vector3.zero;
-			
-            if (!_movementPlayer.State.UpCharacter)
-            {
-	            if (_movementPlayer.CharacterController.isGrounded)
-	            {    
-	            	if (!_movementPlayer.State.IsMovePlayer) 
-	            	{
-	            		_movementCamera.Camera.localPosition = Vector3.Lerp(_movementCamera.Camera.localPosition, _movementCamera.Shake.HeadBob.DoHeadBob(1), Time.fixedDeltaTime * _movementCamera.Shake.SpeedCameraLerp);
-					
-	            	}
-	            	else
-	            	{
-						_movementCamera.Camera.localPosition = Vector3.Lerp(_movementCamera.Camera.localPosition, _movementCamera.Shake.HeadBob.DoHeadBob(_movementPlayer.CharacterController.velocity.magnitude + speed), Time.fixedDeltaTime * _movementCamera.Shake.SpeedCameraLerp);
-	            	}
-	            	
-	                tempCameraPosition =  _movementCamera.Camera.localPosition;
-	                tempCameraPosition.y = _movementCamera.Camera.localPosition.y - _movementCamera.JumpShake.JumpBob.Offset();
-	            }
-	            else
-	            {
-	            	tempCameraPosition = Vector3.Lerp(tempCameraPosition, _movementCamera.Camera.localPosition, Time.fixedDeltaTime * _movementCamera.Shake.SpeedCameraLerp);
-	                tempCameraPosition.y = _movementCamera.OriginalCameraPosition.y - _movementCamera.JumpShake.JumpBob.Offset();
-	            } 
-            }
-
-            tempCameraPosition += _movementCamera.Shake.CameraVector;
-            tempCameraPosition = new Vector3(Mathf.Clamp(tempCameraPosition.x, -_movementCamera.Shake.MaxXShakeCamera, _movementCamera.Shake.MaxXShakeCamera), Mathf.Clamp(tempCameraPosition.y, _movementCamera.Shake.MinHeightCamera, _movementCamera.Shake.MaxHeightCamera), Mathf.Clamp(tempCameraPosition.z, -_movementCamera.Shake.MaxZShakeCamera, _movementCamera.Shake.MaxZShakeCamera));
-            
-            _movementCamera.Camera.localPosition = Vector3.Lerp(_movementCamera.Camera.localPosition, tempCameraPosition, Time.fixedDeltaTime * _movementCamera.Shake.SpeedCameraLerp);
-        }
+        }  
 
         private void GetPlayerInput()
         {
         	_movementPlayer.Move.VerticalAxes = (int)Keys.MoveForward();
         	_movementPlayer.Move.HorizontalAxes = (int)Keys.MoveRight();
             
-            SetInput(ref _movementPlayer.Move.HorizontalAxes,ref _movementPlayer.Move.VerticalAxes);
+            SetInput(ref _movementPlayer.Move.HorizontalAxes, ref _movementPlayer.Move.VerticalAxes);
         }
 		
         private void SetInput(ref float horizontal, ref float vertical)
@@ -357,7 +255,7 @@ namespace Player
         	
         	if (_movementPlayer.State.IsCrouch) 
         	{
-        		inputSpeed = _movementPlayer.Speeds.Squatting;
+        		inputSpeed = _movementPlayer.Speeds.Crouch;
         	}
         	else if(_movementPlayer.Move.Input == Vector2.zero)
         	{
@@ -372,11 +270,11 @@ namespace Player
         		inputSpeed = _movementPlayer.Speeds.Run;
         	}
         	
-        	_movementPlayer.Speeds.CurrentSpeed = Mathf.Lerp(_movementPlayer.Speeds.CurrentSpeed, inputSpeed, Time.fixedDeltaTime * _movementPlayer.Speeds.SpeedTransition);
+        	_movementPlayer.SpeedsSettings.CurrentSpeed = Mathf.Lerp(_movementPlayer.SpeedsSettings.CurrentSpeed, inputSpeed, Time.fixedDeltaTime * _movementPlayer.SpeedsSettings.SpeedTransition);
         	
-        	if (_movementPlayer.Speeds.CurrentSpeed < 0.03) 
+        	if (_movementPlayer.SpeedsSettings.CurrentSpeed < 0.03) 
         	{
-        		_movementPlayer.Speeds.CurrentSpeed = 0;
+        		_movementPlayer.SpeedsSettings.CurrentSpeed = 0;
         	}
         }
         
@@ -385,11 +283,10 @@ namespace Player
         	_movementPlayer.State.IsMovePlayer = _movementPlayer.CharacterController.velocity.magnitude > 0; 
         }
         
-        private void RotateView()
+        private void UpdateWorldGravity()
         {
-            _mouseLook.LookRotation (transform, _movementCamera.Camera.transform);
+        	Physics.gravity = _movementPlayer.Gravity.WorldGravity + _movementPlayer.Gravity.OriginalWorldGravity;
         }
-        
         // Player Physics
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -402,4 +299,5 @@ namespace Player
             body.AddForce( pushDir * _movementPlayer.Physic.Force, ForceMode.Force);
         }
     }
+    
 }

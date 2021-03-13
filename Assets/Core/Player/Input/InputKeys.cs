@@ -41,19 +41,19 @@ namespace PlayerInput
 	        	return Input.GetKeyDown(_movementKey.Jump);
 	        }
 	        
-	        internal static bool SpeedUp()
+	        internal static bool Run()
 	        {
-	        	return Input.GetKey(_movementKey.SpeedUp);
+	        	return Input.GetKey(_movementKey.Run);
 	        }
 	        
-	        internal static bool SpeedUpKeyUp()
+	        internal static bool RunKeyUp()
 	        {
-	        	return Input.GetKeyUp(_movementKey.SpeedUp);
+	        	return Input.GetKeyUp(_movementKey.Run);
 	        }
 	        
-	        internal static bool SpeedUpKeyDown()
+	        internal static bool RunKeyDown()
 	        {
-	        	return Input.GetKeyDown(_movementKey.SpeedUp);
+	        	return Input.GetKeyDown(_movementKey.Run);
 	        }
 	        
 	        internal static bool CrouchDown()
@@ -98,7 +98,7 @@ namespace PlayerInput
 			_movementKey.Right = "d";
 			_movementKey.Left = "a";
 			_movementKey.Jump = "space";
-			_movementKey.SpeedUp = "left shift";
+			_movementKey.Run = "left shift";
 			_movementKey.Crouch = "c";
 		}
 	}
@@ -111,7 +111,7 @@ namespace PlayerInput
 		public string Right;
 		public string Left;
 		public string Jump;
-		public string SpeedUp;
+		public string Run;
 		public string Crouch;
 	}
 	

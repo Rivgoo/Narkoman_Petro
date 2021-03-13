@@ -48,11 +48,15 @@
   <ItemGroup>
      <Compile Include="Assets\Core\Attribute\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Core\Attribute\ReadOnlyDrawer.cs" />
+     <Compile Include="Assets\Core\Player\Data\CalculationData.cs" />
+     <Compile Include="Assets\Core\Player\Data\CurrentMovementPlayerData.cs" />
      <Compile Include="Assets\Core\Player\Data\EnduranceData.cs" />
      <Compile Include="Assets\Core\Player\Data\MouseData.cs" />
      <Compile Include="Assets\Core\Player\Data\MovementCameraData.cs" />
      <Compile Include="Assets\Core\Player\Data\MovementPlayerData.cs" />
+     <Compile Include="Assets\Core\Player\Data\SumMovementPlayerData.cs" />
      <Compile Include="Assets\Core\Player\Input\InputKeys.cs" />
+     <Compile Include="Assets\Core\Player\Object\BlockFreezeObject.cs" />
      <Compile Include="Assets\Core\Player\Object\DestroyObjectEffect.cs" />
      <Compile Include="Assets\Core\Player\Object\FragmentDestroyPhysic.cs" />
      <Compile Include="Assets\Core\Player\Object\IPhysicObject.cs" />
@@ -65,8 +69,9 @@
      <Compile Include="Assets\Core\Player\Player Scripts\LerpControlledBob.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\MainPlayer.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\MouseLook.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\MoveController.cs" />
+     <Compile Include="Assets\Core\Player\Player Scripts\PlayerMoveController.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\PlayerPhysics.cs" />
+     <Compile Include="Assets\Core\Player\Player Scripts\PlayerSteps.cs" />
      <Compile Include="Assets\Core\Player\Sound\PlayerSound.cs" />
      <Compile Include="Assets\Core\Player\UI\ShowInfoBarPlayer.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />

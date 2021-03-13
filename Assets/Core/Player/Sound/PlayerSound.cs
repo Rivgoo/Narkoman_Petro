@@ -5,7 +5,7 @@ namespace Player
 {
 	[Serializable]
     [SerializeField]
-	internal class PlayerSound
+	public class PlayerSound
 	{
 		[Header("Audio Source")]
         [SerializeField] private AudioSource AudioSource;
@@ -15,19 +15,19 @@ namespace Player
         [SerializeField] private AudioClip _jumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip _landSound;           // the sound played when character touches back on ground.
 	
-		internal void PlayLandingSound()
+		public void PlayLandingSound()
 		{
 			AudioSource.clip = _landSound;
 			Play();
 		}
 		
-		internal void PlayJumpSound()
+		public void PlayJumpSound()
         {
             AudioSource.clip = _jumpSound;
             Play();
         }
 		
-		internal void PlayFootStepAudio()
+		public void PlayFootStepAudio()
         {
             // pick & play a random footstep sound from the array,
             // excluding sound at index 0

@@ -14,6 +14,7 @@ namespace PlayerData
 		public CrouchPlayer Crouch;
 		[Header("Speed Settings")]
 		public PlayerSpeeds Speeds;
+		public PlayerSpeedsSettings SpeedsSettings;
 		[Header("Gravity Settings")]
 		public GravityPlayer Gravity;
 		[Header("Step Settings")]
@@ -35,21 +36,33 @@ namespace PlayerData
 
 	}
 	
+	public static class CalculationNumber
+	{
+		public static float GetNumber(float originalValue, float targetPercent)
+		{
+			return (originalValue * targetPercent) / 100;
+		}
+	}
+	
 	[System.Serializable]
     [SerializeField]
     public struct PlayerSpeeds
-    {
+    { 	
         public float Walk; 
         public float Run; 
         public float Jump; 
-        public float Squatting; 
-        
-        [Header("Transition Between Speeds")]
+        public float Crouch; 
+    }
+    
+    [System.Serializable]
+    [SerializeField]
+    public struct PlayerSpeedsSettings
+    {
+    	[Header("Transition Between Speeds")]
         public float SpeedTransition;
         
         [Header("Info")]
         [ReadOnly] public float CurrentSpeed;
-        
     }
     
 	[System.Serializable]
@@ -60,7 +73,7 @@ namespace PlayerData
         
         [Range(0, 3f)] public float RunStepLenghten;
         [Range(0, 3f)] public float WalkStepLenghten;
-        [Range(0, 3f)] public float SquattingStepLenghten;
+        [Range(0, 3f)] public float CrouchStepLenghten;
         
         [Header("Info")]
         [ReadOnly] public float StepCycle;
@@ -132,7 +145,11 @@ namespace PlayerData
 		public float GravityForce; 
 		[Space]
 		public float StickToGroundForce;
+		[Space]
+		public Vector3 WorldGravity;
 		
+		[Header("Info")]
+		[ReadOnly] public Vector3 OriginalWorldGravity;
 	}
 }
 	

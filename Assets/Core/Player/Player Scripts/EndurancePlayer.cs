@@ -45,16 +45,16 @@ namespace Player
         
        	internal bool CheckIsSpeedUp(bool isSpeedUp) 
         {    	
-       		return isSpeedUp && _endurance > 0 && Keys.SpeedUp();
+       		return isSpeedUp && _endurance > 0 && Keys.Run();
         }
        	
-       	internal void CheckKeyDownSpeedUp(ref bool isSpeedUp)
+       	internal void CheckKeyDownRun(ref bool isSpeedUp)
         {
-       		if (Keys.SpeedUpKeyDown())
+       		if (Keys.RunKeyDown())
         	{
         		isSpeedUp = _endurance > _enduranceData.MinValueForSpeedUp;
         	}     
-       		else if (Keys.SpeedUpKeyUp() || _endurance == 0)
+       		else if (Keys.RunKeyUp() || _endurance == 0)
 			{
        			isSpeedUp = false;
 			}       		

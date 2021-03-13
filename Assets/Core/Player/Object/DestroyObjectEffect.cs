@@ -81,7 +81,7 @@ namespace Objects
 		{
 			for (int i = 0; i < _effect.FragmentsObject.Length; i++)
 			{
-				_effect.FragmentsObject[i].AddForceFragment(_effect.ForceFlying);
+				_effect.FragmentsObject[i].AddForceFragment(_effect.ForceDestroy);
 			}
 		}
 	}
@@ -89,11 +89,20 @@ namespace Objects
 	[System.Serializable]
 	public struct PhysicDestroyingObjectEffect
 	{
+		[Header("Audio")]
 		public AudioSource AudioSource;
 		public AudioClip[] Clips;
+		
+		[Header("Particles")]
 		public ParticleSystem[] Particle;
+		
+		[Header("FragmentDestroy")]
 		public FragmentDestroyPhysic[] FragmentsObject;
+		
+		[Space]
 		public float TimeToDestroyPhysic;
-		public float ForceFlying;
+		
+		[Space]
+		public float ForceDestroy;
 	}
 }

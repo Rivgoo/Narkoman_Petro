@@ -4,6 +4,7 @@ namespace Objects
 {
 	public class PhysicDestroyingObject : PhysicObjectDefoult
 	{
+		[Header("Destroy Settings")]
 		[SerializeField] private float _minValueForDestroy;
 		[SerializeField] private GameObject _destroyedObject;
 		
@@ -17,8 +18,6 @@ namespace Objects
 		
 		private void Destroy()
 		{
-			_takeOff = true;
-	
 			Instantiate(_destroyedObject, transform.position, transform.rotation);
 			
 			DestroyOriginalObject();
