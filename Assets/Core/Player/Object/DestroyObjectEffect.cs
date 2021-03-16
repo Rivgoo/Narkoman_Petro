@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using SettingsGame;
 
 namespace Objects
 {
@@ -26,11 +27,6 @@ namespace Objects
 			_effect.AudioSource.Play();
 		}
 		
-		private void DestroyAudio()
-		{
-			Destroy(_effect.AudioSource);
-		}
-		
 		private void PlayParticle()
 		{
 			for (int i = 0; i < _effect.Particle.Length; i++)
@@ -40,6 +36,19 @@ namespace Objects
 			}
 		}
 		
+		private void PlayDestroyObject()
+		{
+			for (int i = 0; i < _effect.FragmentsObjects.Length; i++)
+			{
+				_effect.FragmentsObjects[i].AddForceFragment(_effect.ForceDestroy);
+			}
+		}
+		
+		private void DestroyAudio()
+		{
+			Destroy(_effect.AudioSource);
+		}
+			
 		private void DestroyParticals()
 		{
 			for (int i = 0; i < _effect.Particle.Length; i++)
@@ -50,16 +59,19 @@ namespace Objects
 		
 		private void TimerToDestroyPhysic()
 		{
-			if (_timeLive <= _effect.TimeToDestroyPhysic) 
+			if (_timeLive <= SettingsPhysic.Quality.TimeToDestroyPhysic) 
 			{
 				_timeLive += Time.deltaTime;
 				
 			}
 			else
-			{
+			{ 	
+				if (SettingsPhysic.Quality.IsDestroyPhysic)
+				{
+					DestroyPhysic();
+				}
 				DestroyAudio();
 				DestroyParticals();
-				DestroyPhysic();
 				DestroyOriginalObject();
 			}
 		}
@@ -71,17 +83,26 @@ namespace Objects
 		
 		private void DestroyPhysic()
 		{
-			for (int i = 0; i < _effect.FragmentsObject.Length; i++)
+			if (SettingsPhysic.Quality.IsDestroyObject)
 			{
-				_effect.FragmentsObject[i].DestroyPhysic();
+				for (int i = 0; i < _effect.FragmentsObjects.Length; i++)
+				{
+					_effect.FragmentsObjects[i].DestroyObject();
+				}
 			}
-		}
-		
-		private void PlayDestroyObject()
-		{
-			for (int i = 0; i < _effect.FragmentsObject.Length; i++)
+			else if (SettingsPhysic.Quality.IsDestroyCollider)
 			{
-				_effect.FragmentsObject[i].AddForceFragment(_effect.ForceDestroy);
+				for (int i = 0; i < _effect.FragmentsObjects.Length; i++)
+				{
+					_effect.FragmentsObjects[i].DestroyPhysic();
+				}
+			}
+			else if (SettingsPhysic.Quality.IsDestroyRigidboby) 
+			{
+				for (int i = 0; i < _effect.FragmentsObjects.Length; i++)
+				{
+					_effect.FragmentsObjects[i].DestroyRigidboby();  
+				}
 			}
 		}
 	}
@@ -97,10 +118,7 @@ namespace Objects
 		public ParticleSystem[] Particle;
 		
 		[Header("FragmentDestroy")]
-		public FragmentDestroyPhysic[] FragmentsObject;
-		
-		[Space]
-		public float TimeToDestroyPhysic;
+		public FragmentDestroyPhysic[] FragmentsObjects;
 		
 		[Space]
 		public float ForceDestroy;

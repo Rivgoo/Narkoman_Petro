@@ -14,6 +14,9 @@ namespace Player
     	[Header("Camera Settings")]
     	[SerializeField] private MovementCameraData _defoultMovementCamera = new MovementCameraData();
     	
+    	[Header("Player Sound")]
+		[SerializeField] private PlayerSound _sound;
+    	
     	[Header("Player Move")]
 		[SerializeField] private PlayerMoveController _move;
 		
@@ -23,18 +26,18 @@ namespace Player
 		[Header("Endurance Player")]
 		[SerializeField] private EndurancePlayer _endurance;
 		
-		[Header("Mouse Look")]
-		[SerializeField] private MouseLook _mouseLook;
-		
 		[Header("Take Object")]
 		[SerializeField] private TakeObject _takeObject;
-		
-		[Header("Player Sound")]
-		[SerializeField] private PlayerSound _sound;
+
 		
 		[Header("Player Steps")]
 		[SerializeField] private PlayerSteps _steps;
-
+		
+		[Header("Physics Interaction Small Object")]
+		[SerializeField] private PhysicsInteractionSmallObject _smallObjects;
+		
+		private MouseLook _mouseLook = new MouseLook();
+				
 		private MovementPlayerData _editMovementPlayer = new MovementPlayerData();
     	private MovementCameraData _editMovementCamera = new MovementCameraData(); 	
     	
@@ -43,11 +46,20 @@ namespace Player
 			InitPlayerData();
 			InitCameraData();
 			
-			_mouseLook.Init(transform , _editMovementCamera.Camera);
-			_takeObject.Init(_mouseLook, _editMovementPlayer, _defoultMovementPlayer);
+			// When you Init() then ADD to InitData inizialszation
+			_mouseLook.Init(transform , _editMovementCamera); 
+			
 			_move.Init(_editMovementPlayer, _editMovementCamera, _sound, _endurance);
+			
 			_cameraMove.Init(_editMovementPlayer, _editMovementCamera, _mouseLook);
+			
 			_steps.Init(_editMovementPlayer, _sound);
+			
+			_smallObjects.Init(_editMovementPlayer);
+			
+			_endurance.Init(_editMovementPlayer);
+			
+			_takeObject.Init(_mouseLook, _endurance, _editMovementPlayer, _defoultMovementPlayer);
 		}
 		
 		private void InitPlayerData()
@@ -69,6 +81,7 @@ namespace Player
 			_editMovementCamera.JumpShake = _defoultMovementCamera.JumpShake;
 			_editMovementCamera.OriginalCameraPosition = _defoultMovementCamera.OriginalCameraPosition;
 			_editMovementCamera.Shake = _defoultMovementCamera.Shake;
+			_editMovementCamera.CameraMove = _defoultMovementCamera.CameraMove;
 		}
 		
 		private void Awake()

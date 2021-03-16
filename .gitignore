@@ -1,14 +1,19 @@
 Temp/
 obj/
 Library/
+Value/
+
 Assets/Audio/
-Assets/MATERIAL/
-Assets/Model/
-Assets/Scene/
 Assets/Audio.meta
-Assets/MATERIAL.meta
+Assets/Material/
+Assets/Material.meta
+Assets/Model/
 Assets/Model.meta
+Assets/Scene/
 Assets/Scene.meta
 Assets/PostProcessing/
-Value/
 Assets/PostProcessing.meta
+Assets/Prefabs/
+Assets/Prefabs.meta
+Assets/Standard Assets/
+Assets/Standard Assets.meta

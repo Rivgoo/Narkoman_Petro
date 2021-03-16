@@ -86,10 +86,12 @@ namespace PlayerData
 	{
 		[Header("Forces")]
 		public float ForceSmallObject;
-		public float Force;
+		public float ForceWalk;
+		public float ForceCrouch;
+		public float ForcePlayerRun;
 		
 		[Header("Info")]
-		[ReadOnly] public CollisionFlags Collision;
+		[ReadOnly] public float CurrentForce;
 	}
 	
 	[System.Serializable]
@@ -102,6 +104,8 @@ namespace PlayerData
 		[ReadOnly] public float VerticalAxes;				
 		[ReadOnly] public float HorizontalAxes;
 		
+		[ReadOnly] public CollisionFlags Collision;
+
 		[HideInInspector]
 		public RaycastHit HitInfo; 
 	}

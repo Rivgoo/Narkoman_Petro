@@ -1,20 +1,40 @@
 ﻿using UnityEngine;
 
-namespace PlayerData
+namespace PlayerData.Endurancy
 {
 	[System.Serializable]
-	[SerializeField]
-	public struct EnduranceData
+	public class EnduranceData
 	{
-		[Header("Endurance Value")]	
-		[SerializeField] internal float ValueRun;
-		[SerializeField] internal float ValueJump;
-		
-		[SerializeField] internal float RecoveryEnduranceDefoult;
-		[SerializeField] internal float RecoveryEnduranceWalk;
-		
-		[SerializeField] internal float MinValueForSpeedUp;
-		[SerializeField] internal float MinValueForJump;
-		
+		[Header("Speeds Recovery")]
+		public SpeedsRecovery SpeedsRecovery;
+		[Header("Speeds Drop Rate")]
+		public SpeedsDropRate SpeedsDropRate;
+		[Header("Min Value")]
+		public MinValue MinValue;
 	}
+	
+	[System.Serializable]
+	public struct SpeedsRecovery
+	{
+		[Header("Speeds")]
+		[Range(0.0001f, 1)] public float Stay;
+		[Range(0.0001f, 1)] public float Walk;
+	}
+	
+	[System.Serializable]
+	public struct SpeedsDropRate
+	{
+		[Header("Speeds")]
+		[Range(0.0001f, 1)] public float Run;
+		[Range(0.0001f, 100)] public float Jump;
+	}
+	
+	[System.Serializable]
+	public struct MinValue
+	{
+		[Header("Minimun Value")]
+		[Range(0, 100)] public float Run;
+		[Range(0, 100)] public float Jump;
+		[Range(0, 100)] public float TakeObject;
+	}		
 }

@@ -29,11 +29,31 @@ namespace PlayerData
 	}
 	
 	[System.Serializable]
+    public struct CameraMove
+    {
+    	[Header("Sensitivity")]
+    	public float XSensitivity; 
+        public float YSensitivity; 
+        
+        [Header("Speed Transition To MaxV alue Rotation")]
+        public float SpeedTransition;
+		
+        [Header("Max Angle X")]
+        public float MinimumX; 
+        public float MaximumX; 
+       
+        [Header("Interpolate Rotation")]
+        public float SmoothTime; 
+    }
+	
+	[System.Serializable]
 	[SerializeField]
 	public class MovementCameraData
 	{
 		[Header("Main Camera")]
 		public Transform Camera;	
+		
+		public CameraMove CameraMove;
 		
 		public ShakeCameraData Shake;
 		public JumpShakeCamera JumpShake;

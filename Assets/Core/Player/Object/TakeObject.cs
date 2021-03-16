@@ -15,20 +15,11 @@ namespace Objects
 		[SerializeField] private float _maxDistancyToTake;
 		
 		[Header("Speeds")]
-		[SerializeField] private float _speedTake;
+		[SerializeField] private float _speedMove;
+		[SerializeField] private float _speedMoveWhenPlayerRun;
 		[SerializeField] private float _speedRotation;
 		
-		[Header("Max Distancy to Object Before Take Off")]
-		[SerializeField] private float _maxDistancyToObject;
-		
-		[Header("Force Throw Object")]
-		[SerializeField] private float _forceThrowAway;
-		
-		[Header("Speed Force After Take Off")]
-		[SerializeField] private float _forseAfterTakeOff;
-		[SerializeField] private float _forseTorqueAfterTakeOff;
-		
-		private PlayerSpeeds _speeds;
+		private DefoultPhysicObjectData _dataObject;
 		
 		private IPhysicObject _physicObject;
 		
@@ -42,32 +33,51 @@ namespace Objects
 		private MouseLook _cameraRotation;
 		private RaycastHit _hit;
 		
-		private float _maxDownCameraRotation;
-		
 		private MovementPlayerData _editPlayerData;
 		private MovementPlayerData _originalPlayerData;
 		
-		public void Init(MouseLook cameraRotation, MovementPlayerData editPlayerData,  MovementPlayerData originalPlayerData)
+		private EndurancePlayer _endurancy;
+		
+		private Quaternion _beginRotationVector;
+		
+		private float _distancy;
+		private bool _isRecoveryed;
+		
+		public void Init(MouseLook cameraRotation, EndurancePlayer endurancy, MovementPlayerData editPlayerData,  MovementPlayerData originalPlayerData)
 		{
 			_cameraRotation = cameraRotation;
 			_editPlayerData = editPlayerData;
 			_originalPlayerData = originalPlayerData;
+			_endurancy = endurancy;
 		}
-
+		
+		private void SetEndurancy()
+		{
+			if (_isTake && _distancy > 0.035)
+			{
+				_endurancy.SetTakeObjectValueDropRate(_physicObject.DataObject.DropRateEndurancy);
+			}
+		}
+		
 		private void UpdatePlayerSpeeds()
 		{
-			_editPlayerData.Speeds.Jump -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Jump, _speeds.Jump), 0, 100);
-			_editPlayerData.Speeds.Run -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Run, _speeds.Run), 0, 100);
-			_editPlayerData.Speeds.Walk -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Walk, _speeds.Walk), 0, 100);
-			_editPlayerData.Speeds.Crouch -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Crouch, _speeds.Crouch), 0, 100);
+			_editPlayerData.Speeds.Jump -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Jump, _dataObject.Speeds.Jump), 0, 100);
+			_editPlayerData.Speeds.Run -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Run, _dataObject.Speeds.Run), 0, 100);
+			_editPlayerData.Speeds.Walk -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Walk, _dataObject.Speeds.Walk), 0, 100);
+			_editPlayerData.Speeds.Crouch -= Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Crouch, _dataObject.Speeds.Crouch), 0, 100);
+			_isRecoveryed = false;
 		}
 		
 		private void RecoverPlayerSpeeds()
 		{
-			_editPlayerData.Speeds.Jump += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Jump, _speeds.Jump), 0, 100);
-			_editPlayerData.Speeds.Run += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Run, _speeds.Run), 0, 100);
-			_editPlayerData.Speeds.Walk += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Walk, _speeds.Walk), 0, 100);
-			_editPlayerData.Speeds.Crouch += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Crouch, _speeds.Crouch), 0, 100);
+			if (!_isRecoveryed)
+			{
+				_editPlayerData.Speeds.Jump += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Jump, _dataObject.Speeds.Jump), 0, 100);
+				_editPlayerData.Speeds.Run += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Run, _dataObject.Speeds.Run), 0, 100);
+				_editPlayerData.Speeds.Walk += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Walk, _dataObject.Speeds.Walk), 0, 100);
+				_editPlayerData.Speeds.Crouch += Mathf.Clamp(CalculationNumber.GetNumber(_originalPlayerData.Speeds.Crouch, _dataObject.Speeds.Crouch), 0, 100);
+				_isRecoveryed = true;
+			}
 		}
 		
 		private void CheckTake()
@@ -88,33 +98,43 @@ namespace Objects
 			AddForceAfterTakeOff();
 			RecoverPlayerSpeeds();
 			
-			_physicObject.IsTake = false;
 			_isTakeOff = true;
-			_physicObject.Rigidbody.collisionDetectionMode = _originalMode;
+			_physicObject.DataObject.Rigidbody.collisionDetectionMode = _originalMode;
 			
-			_cameraRotation.SetDownCameraRotatin(-_maxDownCameraRotation);
-			
-			_maxDownCameraRotation = 0;
+			_cameraRotation.SubtractOffsetValueRatation(_physicObject.DataObject.MaxCameraRoation);
 			
 			_physicObject = null;
+		}
+		
+		private void SetTakePostion()
+		{
+			if (_physicObject.DataObject.TypeTakePosition == TypeTakePosition.Player)
+			{
+				 _transformTakedObject.localPosition = _physicObject.DataObject.PositionTakedObject;
+			}
+			else
+			{
+				 _transformTakedObject.position =_physicObject.DataObject.Rigidbody.position;
+			}
 		}
 		
 		private void TakeOn()
 		{
 			CheckIsObjectRigidbody();
 			
-			if (_isTake)
+			if (_isTake && _endurancy.CheckIsTake())
 			{
+				
 				_isTakeOff = false;
-				_physicObject.IsTake = true;
-				_speeds = _physicObject.Speeds;
-				_originalMode = _physicObject.Rigidbody.collisionDetectionMode;
-				_physicObject.Rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-				_maxDownCameraRotation = _physicObject.MaxDownCameraRotation;
+				SetTakePostion();
+				_originalMode = _physicObject.DataObject.Rigidbody.collisionDetectionMode;
+				_physicObject.DataObject.Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+				_dataObject.MaxCameraRoation = _physicObject.DataObject.MaxCameraRoation;
+				_beginRotationVector = _physicObject.DataObject.Rigidbody.rotation;
 				
 				UpdatePlayerSpeeds();
 								
-				 _cameraRotation.SetDownCameraRotatin(_maxDownCameraRotation);
+				_cameraRotation.AddOffsetValueRatation(_physicObject.DataObject.MaxCameraRoation);
 			}
 		}
 		
@@ -127,26 +147,56 @@ namespace Objects
 				_physicObject = _hit.collider.gameObject.GetComponent(typeof(IPhysicObject)) as IPhysicObject;
 				
 				if (_physicObject != null)
-				{ 
-					_transformTakedObject.localPosition = _physicObject.PositionTakedObject;
+				{ 	
+					var distancy = Vector3.Distance(transform.position, _physicObject.DataObject.Rigidbody.position);
+					
+					if (distancy < _physicObject.DataObject.MaxDistancyToTake)
+					{ 
+						_dataObject = _physicObject.DataObject;
+					}
+					else
+					{
+						_physicObject = null;
+					}
 				}
 			}
 		}
 		
 		private void AddForceAfterTakeOff()
-		{
-			var directionForce = _transformTakedObject.position - _physicObject.Rigidbody.position;
-			_physicObject.Rigidbody.AddForce((directionForce) * _forseAfterTakeOff, ForceMode.Impulse);
+		{		
+			var directionForce = _transformTakedObject.position - _physicObject.DataObject.Rigidbody.position;
+			_physicObject.DataObject.Rigidbody.AddForce((directionForce) * _physicObject.DataObject.ForseAfterTakeOff, ForceMode.Impulse);
 			
-			_physicObject.Rigidbody.AddTorque((GetRandomVectorTorque(_physicObject.MaxVectorTorque, directionForce) * _forseTorqueAfterTakeOff), ForceMode.Impulse);
+			_physicObject.DataObject.Rigidbody.AddTorque((GetRandomVectorTorque(_physicObject.DataObject.MaxVectorTorque, directionForce) * _physicObject.DataObject.ForseTorqueAfterTakeOff), ForceMode.Impulse);
 		}
 		
 		private void UpdateObjectPosition()
 		{
+			if (!_endurancy.CheckIsTaking() && _isTake)
+			{
+				TakeOff();
+				return;
+			}
+			
 			if (Mouse.Stay(MouseButtons.RightButton) && _isTake) 
 			{
-				_physicObject.Rigidbody.MovePosition( Vector3.Lerp(_physicObject.Rigidbody.position, _transformTakedObject.position, _speedTake * Time.fixedDeltaTime - (_physicObject.Rigidbody.mass * 0.02f) ));
-				_physicObject.Rigidbody.velocity = Vector3.zero;
+				var speed = _speedMove;
+				
+				if (_editPlayerData.State.IsRun)
+				{
+					speed = _speedMoveWhenPlayerRun;
+				}
+				
+				var direction = Vector3.Lerp(_physicObject.DataObject.Rigidbody.position, _transformTakedObject.position, (speed * Time.fixedDeltaTime) / (_physicObject.DataObject.SlowingMove) );
+				
+				if (_physicObject.DataObject.BlockMoveY) 
+				{
+					direction = new Vector3(direction.x, _physicObject.DataObject.Rigidbody.position.y ,direction.z);
+				}
+				
+				_physicObject.DataObject.Rigidbody.MovePosition(direction);
+				
+				_physicObject.DataObject.Rigidbody.velocity = Vector3.zero;
 				
 				if (CheckDistancyToObject()) 
 				{
@@ -157,17 +207,17 @@ namespace Objects
 		
 		private bool CheckDistancyToObject()
 		{
-			var distancy = Mathf.Sqrt( Mathf.Pow(_physicObject.Rigidbody.position.x - _transformTakedObject.position.x, 2) +  Mathf.Pow(_physicObject.Rigidbody.position.y - _transformTakedObject.position.y, 2) +  Mathf.Pow(_physicObject.Rigidbody.position.z - _transformTakedObject.position.z, 2));
+			_distancy = Vector3.Distance(_transformTakedObject.position, _physicObject.DataObject.Rigidbody.position);
 			
-			return distancy > _maxDistancyToObject;
+			return _distancy > _physicObject.DataObject.MaxDistancyToObject;
 		}
 		
 		private void TakeOffYouself()
 		{
-			_cameraRotation.SetDownCameraRotatin(-_maxDownCameraRotation);
-			
-			_maxDownCameraRotation = 0;
+			_cameraRotation.SubtractOffsetValueRatation(_dataObject.MaxCameraRoation);
+						
 			RecoverPlayerSpeeds();
+			_isTakeOff = true;
 		}
 		
 		private void CheckNullObject()
@@ -176,16 +226,6 @@ namespace Objects
 			{
 				TakeOffYouself();
 			}
-		}
-			
-		private void Update()
-		{
-			CheckNullObject();
-			
-			CheckTake();
-			CheckRotationAxises();
-			RotationObject();
-			CheckThrowAwayObject();
 		}
 		
 		private void CheckThrowAwayObject()
@@ -198,13 +238,8 @@ namespace Objects
 		
 		private void ThrowAwayObject()
 		{
-			_physicObject.Rigidbody.AddForce(Camera.main.ScreenPointToRay(Input.mousePosition).direction * _forceThrowAway, ForceMode.Impulse);
+			_physicObject.DataObject.Rigidbody.AddForce(Camera.main.ScreenPointToRay(Input.mousePosition).direction * _physicObject.DataObject.ForceThrowAway, ForceMode.Impulse);
 			TakeOff();
-		}
-		
-		private void FixedUpdate()
-		{
-			UpdateObjectPosition();
 		}
 		
 		private void CheckRotationAxises()
@@ -237,21 +272,27 @@ namespace Objects
 		{
 			if (_isTake)
 			{
-				if (Input.GetAxis("Mouse ScrollWheel") != 0)
+				if (_physicObject.DataObject.BlockFreeRotation)
 				{
-					if (Input.GetAxis("Mouse ScrollWheel") > 0)
+					_physicObject.DataObject.Rigidbody.rotation = _beginRotationVector;
+				}
+				else
+				{
+					if (Input.GetAxis("Mouse ScrollWheel") != 0 && !_physicObject.DataObject.BlockPlayerRotation)
 					{
-						_physicObject.Rigidbody.AddTorque(_vectorRotation * _speedRotation, ForceMode.Force);
+						if (Input.GetAxis("Mouse ScrollWheel") > 0)
+						{
+							_physicObject.DataObject.Rigidbody.AddTorque(_vectorRotation * _speedRotation, ForceMode.Force);
+						}
+						else
+						{
+							_physicObject.DataObject.Rigidbody.AddTorque((_vectorRotation * -1) * _speedRotation, ForceMode.Force);
+						}
 					}
 					else
 					{
-						_physicObject.Rigidbody.AddTorque((_vectorRotation * -1) * _speedRotation, ForceMode.Force);
+						_physicObject.DataObject.Rigidbody.angularVelocity = Vector3.zero;
 					}
-				}
-				
-				if (Input.GetKeyDown("f1"))
-				{
-					_physicObject.Rigidbody.angularVelocity = Vector3.zero;
 				}
 			}
 		}
@@ -259,6 +300,25 @@ namespace Objects
 		private enum RotationAxeses
 		{
 			X, Y, Z
+		}
+		
+		private void FixedUpdate()
+		{
+			UpdateObjectPosition();
+			SetEndurancy();
+		}
+		
+		private void Update()
+		{
+			CheckNullObject();
+			
+			CheckTake();
+			
+			// ROTATION OBJECT
+			//CheckRotationAxises();
+			//RotationObject();
+			
+			CheckThrowAwayObject();
 		}
 		
 		private Vector3 GetRandomVectorTorque(Vector3 target, Vector3 directionNormalize)

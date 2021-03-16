@@ -2,7 +2,6 @@ using UnityEngine;
 using Keys = PlayerInput.InputKeys.CheckMovementKey; 
 using Random = UnityEngine.Random;
 using PlayerData;
-using Objects;
 
 namespace Player
 {
@@ -91,6 +90,7 @@ namespace Player
         #endregion
         
         #region System
+        
         private void Start()
         {
         	_movementPlayer.Gravity.OriginalWorldGravity = Physics.gravity;
@@ -130,8 +130,6 @@ namespace Player
             Crouch();
             Jump();
             Move();
-            
-            UpdateValueEndurance();    
         }
         #endregion
         
@@ -175,12 +173,12 @@ namespace Player
 		
         private void Move()
         {
-        	_movementPlayer.Physic.Collision = _movementPlayer.CharacterController.Move(_movementPlayer.Move.Direction * Time.fixedDeltaTime);
+        	_movementPlayer.Move.Collision = _movementPlayer.CharacterController.Move(_movementPlayer.Move.Direction * Time.fixedDeltaTime);
         }
 		
         private void Jump()
         {
-        	if (_movementPlayer.CharacterController.isGrounded)
+        	if (_movementPlayer.CharacterController.isGrounded && _movementPlayer.Move.Collision != CollisionFlags.Above)
             {
                 _movementPlayer.Move.Direction.y = -_movementPlayer.Gravity.StickToGroundForce;
 
@@ -193,12 +191,20 @@ namespace Player
                     _movementPlayer.State.IsJump = false;
                     _movementPlayer.State.IsJumping = true;
                     
-                    _endurance.PlayerJump();
+                    _endurance.SetJumpValueDropRate();
                 }
             }
             else
             {
-                _movementPlayer.Move.Direction += Physics.gravity *  _movementPlayer.Gravity.GravityForce * Time.fixedDeltaTime;
+            	if (_movementPlayer.Move.Collision == CollisionFlags.Above)
+            	{
+            		_movementPlayer.Move.Direction -= new Vector3(0, 0.8f, 0);
+            	}
+            	else
+            	{
+                	_movementPlayer.Move.Direction += Physics.gravity *  _movementPlayer.Gravity.GravityForce * Time.fixedDeltaTime;
+            
+            	}
             }
         }
         
@@ -209,25 +215,6 @@ namespace Player
             	_movementPlayer.State.IsJump = _endurance.CheckIsJump() && _movementPlayer.CharacterController.isGrounded;
             }
         }
-                  
-        private void UpdateValueEndurance()
-        {       	
-        	if (_movementPlayer.State.IsMovePlayer) 
-            {
-            	if (!_movementPlayer.State.IsWalking) // Player Run
-            	{
-            		_endurance.PlayerRun();
-            	}
-            	else if (!Keys.Run() && !_movementPlayer.State.IsCrouch) // Don't key down Speed Up
-            	{
-            		_endurance.RecoveryEnduranceWalk();
-            	}  	
-            }
-        	else if(!_movementPlayer.State.IsCrouch && !Keys.Run())
-        	{
-        		_endurance.RecoveryEnduranceDefoult();
-        	}
-        }  
 
         private void GetPlayerInput()
         {
@@ -249,7 +236,7 @@ namespace Player
         
         private void ChooseCurrentTypeSpeed()
         {   
-        	_movementPlayer.State.IsWalking = !(_endurance.CheckIsSpeedUp(_movementPlayer.State.IsRun));
+        	_movementPlayer.State.IsWalking = !(_endurance.CheckIsRun(_movementPlayer.State.IsRun));
         	
         	float inputSpeed = 0;
         	
@@ -286,17 +273,41 @@ namespace Player
         private void UpdateWorldGravity()
         {
         	Physics.gravity = _movementPlayer.Gravity.WorldGravity + _movementPlayer.Gravity.OriginalWorldGravity;
+        	
+        	
         }
+        
         // Player Physics
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             Rigidbody body = hit.collider.attachedRigidbody;
 			  
-            if (body == null || hit.moveDirection.y < -0.3f || _movementPlayer.Physic.Collision == CollisionFlags.Below) return;
+            if (body == null || hit.moveDirection.y < -0.3f) return;
             
-            var pushDir = new Vector3(hit.moveDirection.x, hit.moveDirection.y, hit.moveDirection.z);
-            //body.velocity = pushDir * _force;
-            body.AddForce( pushDir * _movementPlayer.Physic.Force, ForceMode.Force);
+            UpdateForce();
+            var pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z) * _movementPlayer.Physic.CurrentForce * 100;
+            
+            body.AddForce(pushDir, ForceMode.Force);
+        }
+        
+        private void UpdateForce()
+        {
+        	if (_movementPlayer.State.IsRun)
+        	{
+        		_movementPlayer.Physic.CurrentForce = _movementPlayer.Physic.ForcePlayerRun;
+        	}
+        	else if (_movementPlayer.State.IsCrouch)
+        	{
+        		_movementPlayer.Physic.CurrentForce = _movementPlayer.Physic.ForceCrouch; 
+        	}
+        	else if (_movementPlayer.State.IsWalking)
+        	{
+        		_movementPlayer.Physic.CurrentForce = _movementPlayer.Physic.ForceWalk;
+        	}
+        	else
+        	{
+        		_movementPlayer.Physic.CurrentForce = 0;
+        	}
         }
     }
     

@@ -48,16 +48,12 @@
   <ItemGroup>
      <Compile Include="Assets\Core\Attribute\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Core\Attribute\ReadOnlyDrawer.cs" />
-     <Compile Include="Assets\Core\Player\Data\CalculationData.cs" />
-     <Compile Include="Assets\Core\Player\Data\CurrentMovementPlayerData.cs" />
      <Compile Include="Assets\Core\Player\Data\EnduranceData.cs" />
-     <Compile Include="Assets\Core\Player\Data\MouseData.cs" />
      <Compile Include="Assets\Core\Player\Data\MovementCameraData.cs" />
      <Compile Include="Assets\Core\Player\Data\MovementPlayerData.cs" />
-     <Compile Include="Assets\Core\Player\Data\SumMovementPlayerData.cs" />
      <Compile Include="Assets\Core\Player\Input\InputKeys.cs" />
-     <Compile Include="Assets\Core\Player\Object\BlockFreezeObject.cs" />
      <Compile Include="Assets\Core\Player\Object\DestroyObjectEffect.cs" />
+     <Compile Include="Assets\Core\Player\Object\EditCenterOfMass.cs" />
      <Compile Include="Assets\Core\Player\Object\FragmentDestroyPhysic.cs" />
      <Compile Include="Assets\Core\Player\Object\IPhysicObject.cs" />
      <Compile Include="Assets\Core\Player\Object\PhysicDestroyingObject.cs" />
@@ -69,11 +65,12 @@
      <Compile Include="Assets\Core\Player\Player Scripts\LerpControlledBob.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\MainPlayer.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\MouseLook.cs" />
+     <Compile Include="Assets\Core\Player\Player Scripts\PhysicsInteractionSmallObject.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\PlayerMoveController.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\PlayerPhysics.cs" />
      <Compile Include="Assets\Core\Player\Player Scripts\PlayerSteps.cs" />
      <Compile Include="Assets\Core\Player\Sound\PlayerSound.cs" />
      <Compile Include="Assets\Core\Player\UI\ShowInfoBarPlayer.cs" />
+     <Compile Include="Assets\Core\SettingsGame\SettingsPhysic.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -141,7 +138,6 @@
      <None Include="Assets\PostProcessing\Resources\Shaders\AmbientOcclusion.shader" />
      <None Include="Assets\PostProcessing\Resources\Bluenoise64\LICENSE.txt" />
      <None Include="Assets\PostProcessing\Resources\Shaders\BuiltinDebugViews.shader" />
-     <None Include="Assets\MATERIAL\Outlined.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Common.cginc" />
      <None Include="Assets\PostProcessing\Resources\Bluenoise64\COPYING.txt" />
      <None Include="Assets\PostProcessing\Editor Resources\UI\Trackball.shader" />
@@ -155,6 +151,7 @@
      <None Include="Assets\PostProcessing\Resources\Shaders\DiskKernels.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ScreenSpaceRaytrace.cginc" />
+     <None Include="Assets\Material\Materials\Glas.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Bloom.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\VectorscopeRender.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\EyeAdaptation.shader" />
@@ -182,6 +179,10 @@
  <Reference Include="UnityEngine.VR">
  <HintPath>E:/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{086CEBD9-7366-1CC2-65D9-487E97B6D915}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

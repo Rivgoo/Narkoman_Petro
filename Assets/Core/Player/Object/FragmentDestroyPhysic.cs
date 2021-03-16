@@ -4,26 +4,31 @@ namespace Objects
 {
 	public class FragmentDestroyPhysic : MonoBehaviour
 	{
-		[Header("Settings")]
-		[SerializeField] private bool _IsDestroyCollider;
-		[SerializeField] private bool _IsDestroyRigidboby;
-		
 		[Header("Physic")]
 		[SerializeField] private Rigidbody _rigidbody;
-		[SerializeField] private Collider _collider;
+		[SerializeField] private Collider[] _colliders;
+		
+		public void DestroyObject()
+		{
+			Destroy(gameObject);
+			Destroy(this);
+		}
+		
+		public void DestroyRigidboby()
+		{
+			Destroy(_rigidbody);
+			Destroy(this);
+		}
 		
 		public void DestroyPhysic()
 		{
-			if (_IsDestroyCollider)
+			Destroy(_rigidbody);
+			
+			for (int i = 0; i < _colliders.Length; i++)
 			{
-				Destroy(_rigidbody);
-				Destroy(_collider);
+				Destroy(_colliders[i]);
 			}
-			else if (_IsDestroyRigidboby) 
-			{
-				Destroy(_rigidbody);
-			}
-
+			
 			Destroy(this);
 		}
 		

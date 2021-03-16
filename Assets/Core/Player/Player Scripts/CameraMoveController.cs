@@ -20,11 +20,35 @@ namespace Player
         	_movementCamera = movementCamera;
         	
         	_movementCamera.OriginalCameraPosition = _movementCamera.Camera.localPosition;
-            _movementCamera.Shake.HeadBob.Setup(_movementCamera.Camera, _movementPlayer.Step.StepInterval);
+            _movementCamera.Shake.HeadBob.Setup(_movementCamera.Camera, _movementPlayer.Step.StepInterval);  
             
-			MouseLook.HideCursor(); // TODO
+			HideCursor(); // TODO
         }
 		
+    	public static void HideCursor()
+        {
+        	Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        
+      	public static void ShowCursor()
+        {
+        	 Cursor.lockState = CursorLockMode.None;
+             Cursor.visible = true;
+        }
+      	
+    	private static void CursoreLockUpdate()
+        {
+            if(Input.GetKeyUp(KeyCode.Escape))
+            {
+            	ShowCursor();
+            }
+            else if(Input.GetMouseButtonUp(0))
+            {
+            	HideCursor();
+            }
+        }
+      	
     	private void UpdateCameraPosition(float speed)
         {
             var tempCameraPosition = Vector3.zero;
@@ -61,7 +85,7 @@ namespace Player
     	
 		private void RotateView()
         {
-            _mouseLook.LookRotation(transform, _movementCamera.Camera.transform);
+            _mouseLook.LookRotation(transform);
         }
 		
 		private void HeadBob()
@@ -86,10 +110,11 @@ namespace Player
 		
 		private void Update()
 		{
+			CursoreLockUpdate(); //TODO: When will Add Menu UI then delete this method
 			HeadBob();
 			RotateView();
 			
-			 MouseLook.CursoreLockUpdate(); //TODO: When will Add Menu UI then delete this method
+			_mouseLook.UpdateMaxValueRotation(); 
 		}
 		
 		private void FixedUpdate()
