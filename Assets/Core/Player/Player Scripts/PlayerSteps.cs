@@ -56,7 +56,7 @@ namespace Player
 		
 		private void FixedUpdate()
 		{
-			ProgressStepCycle(_movementPlayer.SpeedsSettings.CurrentSpeed);
+			ProgressStepCycle(_movementPlayer.Speeds.Current);
 		}
 	}
 }

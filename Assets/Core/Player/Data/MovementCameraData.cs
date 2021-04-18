@@ -35,15 +35,15 @@ namespace PlayerData
     	public float XSensitivity; 
         public float YSensitivity; 
         
-        [Header("Speed Transition To MaxV alue Rotation")]
+        [Header("Speed Transition To Max Value Rotation")]
         public float SpeedTransition;
 		
-        [Header("Max Angle X")]
-        public float MinimumX; 
-        public float MaximumX; 
-       
-        [Header("Interpolate Rotation")]
-        public float SmoothTime; 
+        public Vector2Angle DefoultAngle;
+        
+        public float TimeInterpolateRotation; 
+        
+        [Header("Info")]
+        [ReadOnly] public Vector2Angle CurrentAngle;
     }
 	
 	[System.Serializable]
@@ -66,6 +66,13 @@ namespace PlayerData
 			Shake.HeadBob = new CurveControlledBob();
 			JumpShake.JumpBob = new LerpControlledBob();
 		}
+	}
+	
+	[System.Serializable]
+	public struct Vector2Angle
+	{
+		public float Minimum; 
+        public float Maximum; 
 	}
 }
 	

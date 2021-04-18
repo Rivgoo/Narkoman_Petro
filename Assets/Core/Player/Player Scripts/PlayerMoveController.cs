@@ -21,7 +21,6 @@ namespace Player
         	_endurance = endurance;
         }
         
-		#region Squatting 
 		private void Crouch()
 		{
 			if (_movementPlayer.State.IsCrouch)
@@ -63,7 +62,7 @@ namespace Player
 		
         private void CheckCrouch()
 	        {        	
-	        	if (Keys.CrouchDown() && !_movementPlayer.State.IsJumping)
+	        	if (Keys.CrouchDown() && !_movementPlayer.State.IsJumping && !_movementPlayer.BlockMovement.Crouch && !_movementPlayer.BlockMovement.MovePlayer)
 	        	{
 	        		_movementPlayer.State.IsCrouch = true;
 	        		_movementPlayer.Crouch.CheckCrouchRaycast = false; 
@@ -76,7 +75,7 @@ namespace Player
 	        	
 	        	if (_movementPlayer.Crouch.CheckCrouchRaycast) 
 	        	{
-	        		if (Physics.Raycast(transform.position, Vector3.up, _movementPlayer.Crouch.DistanceCheckCrouchRaycast)) 
+	        		if (RaycastUp(transform.position, _movementPlayer.Crouch.DistanceCheckCrouchRaycast)) 
 	        		{
 	        			_movementPlayer.State.IsCrouch = true;
 	        		}
@@ -87,22 +86,25 @@ namespace Player
 	        		}
 	        	}
 	        }
-        #endregion
-        
-        #region System
         
         private void Start()
         {
         	_movementPlayer.Gravity.OriginalWorldGravity = Physics.gravity;
         }
         
+        private bool RaycastUp(Vector3 origin, float maxDistancy)
+        {
+        	return Physics.Raycast(origin, Vector3.up, maxDistancy);
+        }
+        
         private void Update()
         {   
         	CheckMovePlayer(); 
         	CheckCrouch(); 
-        	CheckRun();  	 	  	
-            EndJumping();
-            CheckJump();
+        	CheckRun();
+        	CheckJump();
+        	
+            EndJumping(); 
             ChooseCurrentTypeSpeed();
             NullDirectionY();
             PreviouslyGrounded();
@@ -131,20 +133,19 @@ namespace Player
             Jump();
             Move();
         }
-        #endregion
         
         private void CheckRun()
         {
         	_endurance.CheckKeyDownRun(ref _movementPlayer.State.IsRun);
-        	_movementPlayer.State.IsRun = _movementPlayer.State.IsRun && !_movementPlayer.State.IsCrouch;
+        	_movementPlayer.State.IsRun = _movementPlayer.State.IsRun && !_movementPlayer.State.IsCrouch && !_movementPlayer.BlockMovement.Run && !_movementPlayer.BlockMovement.MovePlayer;
         	
         }
 		
         private void EndJumping()
         {
-        	if (!_movementPlayer.State.PreviouslyGrounded && _movementPlayer.CharacterController.isGrounded && !_movementPlayer.State.UpCharacter)
+        	if (!_movementPlayer.State.PreviouslyGrounded && _movementPlayer.CharacterController.isGrounded && !_movementPlayer.State.UpCharacter && !_movementPlayer.State.IsCrouch)
             {
-                StartCoroutine(_movementCamera.JumpShake.JumpBob.DoBobCycle());
+                StartCoroutine(_movementCamera.JumpShake.JumpBob.PlayBobCycle());
                 PlayLandingSound();
                 _movementPlayer.Move.Direction.y = 0f;
                 _movementPlayer.State.IsJumping = false;
@@ -160,9 +161,9 @@ namespace Player
             Physics.SphereCast(transform.position, _movementPlayer.CharacterController.radius, Vector3.down, out _movementPlayer.Move.HitInfo, _movementPlayer.CharacterController.height/2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
             
             desiredMove = Vector3.ProjectOnPlane(desiredMove, _movementPlayer.Move.HitInfo.normal).normalized;
-            
-            _movementPlayer.Move.Direction.x = desiredMove.x * _movementPlayer.SpeedsSettings.CurrentSpeed;
-            _movementPlayer.Move.Direction.z = desiredMove.z * _movementPlayer.SpeedsSettings.CurrentSpeed;
+
+            _movementPlayer.Move.Direction.x = desiredMove.x * _movementPlayer.Speeds.Current;
+            _movementPlayer.Move.Direction.z = desiredMove.z * _movementPlayer.Speeds.Current;
         }
 		
         private void PlayLandingSound()
@@ -173,7 +174,10 @@ namespace Player
 		
         private void Move()
         {
-        	_movementPlayer.Move.Collision = _movementPlayer.CharacterController.Move(_movementPlayer.Move.Direction * Time.fixedDeltaTime);
+        	if (!_movementPlayer.BlockMovement.MovePlayer)
+        	{
+        		_movementPlayer.Move.Collision = _movementPlayer.CharacterController.Move(_movementPlayer.Move.Direction * Time.fixedDeltaTime);
+        	}
         }
 		
         private void Jump()
@@ -210,10 +214,13 @@ namespace Player
         
         private void CheckJump()
         {
-        	if (!_movementPlayer.State.IsJump && !_movementPlayer.State.IsCrouch && !_movementPlayer.State.UpCharacter)
-            {
-            	_movementPlayer.State.IsJump = _endurance.CheckIsJump() && _movementPlayer.CharacterController.isGrounded;
-            }
+        	if (!RaycastUp(transform.position, 1.5f) && !_movementPlayer.BlockMovement.Jump && !_movementPlayer.BlockMovement.MovePlayer)
+        	{	
+	        	if (!_movementPlayer.State.IsJump && !_movementPlayer.State.IsCrouch && !_movementPlayer.State.UpCharacter)
+	            {
+	            	_movementPlayer.State.IsJump = _endurance.CheckIsJump() && _movementPlayer.CharacterController.isGrounded;
+	            }
+        	}
         }
 
         private void GetPlayerInput()
@@ -221,12 +228,7 @@ namespace Player
         	_movementPlayer.Move.VerticalAxes = (int)Keys.MoveForward();
         	_movementPlayer.Move.HorizontalAxes = (int)Keys.MoveRight();
             
-            SetInput(ref _movementPlayer.Move.HorizontalAxes, ref _movementPlayer.Move.VerticalAxes);
-        }
-		
-        private void SetInput(ref float horizontal, ref float vertical)
-        {
-        	_movementPlayer.Move.Input = new Vector2(horizontal, vertical);
+          	_movementPlayer.Move.Input = new Vector2(_movementPlayer.Move.HorizontalAxes, _movementPlayer.Move.VerticalAxes);
 	        
             if (_movementPlayer.Move.Input.sqrMagnitude > 1)
             {
@@ -257,11 +259,11 @@ namespace Player
         		inputSpeed = _movementPlayer.Speeds.Run;
         	}
         	
-        	_movementPlayer.SpeedsSettings.CurrentSpeed = Mathf.Lerp(_movementPlayer.SpeedsSettings.CurrentSpeed, inputSpeed, Time.fixedDeltaTime * _movementPlayer.SpeedsSettings.SpeedTransition);
+        	_movementPlayer.Speeds.Current = Mathf.Lerp(_movementPlayer.Speeds.Current, inputSpeed, Time.fixedDeltaTime * _movementPlayer.SpeedsSettings.SpeedTransitionBetweenSpeeds);
         	
-        	if (_movementPlayer.SpeedsSettings.CurrentSpeed < 0.03) 
+        	if (_movementPlayer.Speeds.Current < 0.03) 
         	{
-        		_movementPlayer.SpeedsSettings.CurrentSpeed = 0;
+        		_movementPlayer.Speeds.Current = 0;
         	}
         }
         
@@ -294,7 +296,7 @@ namespace Player
         {
         	if (_movementPlayer.State.IsRun)
         	{
-        		_movementPlayer.Physic.CurrentForce = _movementPlayer.Physic.ForcePlayerRun;
+        		_movementPlayer.Physic.CurrentForce = _movementPlayer.Physic.ForceRun;
         	}
         	else if (_movementPlayer.State.IsCrouch)
         	{

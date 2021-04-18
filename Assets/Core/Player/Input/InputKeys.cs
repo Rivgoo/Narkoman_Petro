@@ -5,6 +5,7 @@ namespace PlayerInput
 	public class InputKeys : MonoBehaviour
 	{			
 		private static DefoultMovementKeys _movementKey;
+		private static KeyboardKey _keyboardKey;
 		
 		public static class CheckMovementKey
 		{
@@ -85,10 +86,29 @@ namespace PlayerInput
 			}
 			
 		}
+		
+		public static class CheckKeyboardKey
+		{		
+			public static bool DownKeyGet()
+			{
+				return Input.GetKeyDown(_keyboardKey.Get);
+			}
+			
+			public static bool StayKeyGet()
+			{
+				return Input.GetKey(_keyboardKey.Get);
+			}
+			
+			public static bool UpKeyGet()
+			{
+				return Input.GetKeyUp(_keyboardKey.Get);
+			}	
+		}
         
 		private void Awake()
 		{
 			InitMovementKey();
+			InitKeyboardKey();
 		}
 		
 		private void InitMovementKey()
@@ -100,6 +120,11 @@ namespace PlayerInput
 			_movementKey.Jump = "space";
 			_movementKey.Run = "left shift";
 			_movementKey.Crouch = "c";
+		}
+		
+		private void InitKeyboardKey()
+		{
+			_keyboardKey.Get = "e";
 		}
 	}
 	
@@ -113,6 +138,12 @@ namespace PlayerInput
 		public string Jump;
 		public string Run;
 		public string Crouch;
+	}
+	
+	[System.Serializable]
+	public struct KeyboardKey
+	{
+		public string Get;
 	}
 	
 	public enum DirectionsMove

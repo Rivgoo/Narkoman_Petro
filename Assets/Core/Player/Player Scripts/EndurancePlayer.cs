@@ -21,7 +21,11 @@ namespace Player
 		private EnduranceData _editData = new EnduranceData();
 		
 		private MovementPlayerData _movementPlayer;
-		 
+		
+		/// <summary>
+		/// Init Script
+		/// </summary>
+		/// <param name="movementPlayer">MovementPlayerData</param>
 		public void Init(MovementPlayerData movementPlayer)
         {
         	_movementPlayer = movementPlayer;
@@ -44,7 +48,7 @@ namespace Player
 		
 		public bool CheckIsTaking()
 		{
-			return _endurance > 0.5f;
+			return _endurance < 0.5f;
 		}
 		
 		public bool CheckIsJump()
@@ -71,11 +75,14 @@ namespace Player
 		
 		private void SetEndurance(float value)
 		{
-			_endurance = Mathf.Clamp(_endurance + value, 0, 100);
-			_showBar.UpdateBar(_endurance / 100);		
+			if (_isUseEndurance)
+			{
+				_endurance = Mathf.Clamp(_endurance + value, 0, 100);
+				_showBar.UpdateBar(_endurance / 100);		
+			}
 		}
 		
-		private void UpdateValueEndurance()
+		private void UpdateMovementValueEndurance()
         {       	
         	if (_movementPlayer.State.IsMovePlayer) 
             {
@@ -88,7 +95,7 @@ namespace Player
             		SetEndurance(_editData.SpeedsRecovery.Walk);
             	}  	
             }
-        	else if(!_movementPlayer.State.IsCrouch && !Keys.Run())
+        	else if(!_movementPlayer.State.IsCrouch)
         	{
         		SetEndurance(_editData.SpeedsRecovery.Stay);
         	}
@@ -98,7 +105,7 @@ namespace Player
 		{
 			if (_isUseEndurance)
 			{
-				UpdateValueEndurance();
+				UpdateMovementValueEndurance();
 			}
 		}
 		

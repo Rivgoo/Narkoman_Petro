@@ -7,23 +7,18 @@ namespace PlayerData
 	[SerializeField]
 	public class MovementPlayerData 
 	{
-		[Header("Player Character Controller")]
 		public CharacterController CharacterController;
 		
-		[Header("Squatting Settings")]
 		public CrouchPlayer Crouch;
-		[Header("Speed Settings")]
 		public PlayerSpeeds Speeds;
 		public PlayerSpeedsSettings SpeedsSettings;
-		[Header("Gravity Settings")]
 		public GravityPlayer Gravity;
-		[Header("Step Settings")]
 		public Step Step;
-		
-		[Header("Physic Objects Settings")]
 		public PhysicObjects Physic;
 		
+		
 		[Header("Info Data")]
+		public BlockMovementPlayer BlockMovement;
 		public StateMovementPlayer State;
 		public Move Move;
 		
@@ -52,17 +47,16 @@ namespace PlayerData
         public float Run; 
         public float Jump; 
         public float Crouch; 
+        
+        [Header("Info")]
+        [ReadOnly] public float Current;
     }
     
     [System.Serializable]
     [SerializeField]
     public struct PlayerSpeedsSettings
     {
-    	[Header("Transition Between Speeds")]
-        public float SpeedTransition;
-        
-        [Header("Info")]
-        [ReadOnly] public float CurrentSpeed;
+        public float SpeedTransitionBetweenSpeeds;
     }
     
 	[System.Serializable]
@@ -88,7 +82,7 @@ namespace PlayerData
 		public float ForceSmallObject;
 		public float ForceWalk;
 		public float ForceCrouch;
-		public float ForcePlayerRun;
+		public float ForceRun;
 		
 		[Header("Info")]
 		[ReadOnly] public float CurrentForce;
@@ -144,7 +138,17 @@ namespace PlayerData
 	
 	[System.Serializable]
 	[SerializeField]
-	public struct GravityPlayer
+	public struct BlockMovementPlayer
+	{
+		public bool Jump;
+		public bool Crouch;
+	    public bool MovePlayer;
+	    public bool Run;
+	}
+	
+	[System.Serializable]
+	[SerializeField]
+	public struct GravityPlayer 
 	{
 		public float GravityForce; 
 		[Space]

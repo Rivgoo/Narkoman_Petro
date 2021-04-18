@@ -7,28 +7,27 @@ namespace Player
     [Serializable]
     public class LerpControlledBob
     {
-    	[SerializeField]
-      	private float BobDuration;
-        [SerializeField]
-        private float BobAmount;
+      	[SerializeField]private float BobDuration;        
+        [SerializeField] private float BobAmount;
 
-        private float m_Offset = 0f;
+        private float _offset;
 
-
-        // provides the offset that can be used
-        internal float Offset()
+        /// <summary>
+        /// Provides the offset 
+        /// </summary>
+        /// <returns>Offset value</returns>
+        public float Offset()
         {
-            return m_Offset;
+            return _offset;
         }
 
-
-        internal IEnumerator DoBobCycle()
+        public IEnumerator PlayBobCycle()
         {
             // make the camera move down slightly
             float t = 0f;
             while (t < BobDuration)
             {
-                m_Offset = Mathf.Lerp(0f, BobAmount, t/BobDuration);
+                _offset = Mathf.Lerp(0f, BobAmount, t/BobDuration);
                 t += Time.deltaTime;
                 yield return new WaitForFixedUpdate();
             }
@@ -37,11 +36,11 @@ namespace Player
             t = 0f;
             while (t < BobDuration)
             {
-                m_Offset = Mathf.Lerp(BobAmount, 0f, t/BobDuration);
+                _offset = Mathf.Lerp(BobAmount, 0f, t/BobDuration);
                 t += Time.deltaTime;
                 yield return new WaitForFixedUpdate();
             }
-            m_Offset = 0f;
+            _offset = 0f;
         }
     }
 }

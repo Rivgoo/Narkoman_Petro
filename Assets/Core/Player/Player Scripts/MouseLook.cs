@@ -14,30 +14,30 @@ namespace Player
         private float _targetMaxX;
         private float _targetMinX;
 		
-        public void AddOffsetValueRatation(Vector2 values)
+        public void AddOffsetValueRatation(Vector2Angle values)
         {
-        	_targetMaxX -= values.x;
-        	_targetMinX += values.y;
+        	_targetMaxX -= values.Maximum;
+        	_targetMinX += values.Minimum;
         }
         
-        public void SubtractOffsetValueRatation(Vector2 values)
+        public void SubtractOffsetValueRatation(Vector2Angle values)
         {
-        	_targetMaxX += values.x;
-        	_targetMinX -= values.y;
+        	_targetMaxX += values.Maximum;
+        	_targetMinX -= values.Minimum;
         }
         
         public void UpdateMaxValueRotation()
         {
-        	_cameraMove.CameraMove.MaximumX = Mathf.Lerp(_cameraMove.CameraMove.MaximumX, _targetMaxX, _cameraMove.CameraMove.SpeedTransition * Time.deltaTime);
-        	_cameraMove.CameraMove.MinimumX = Mathf.Lerp(_cameraMove.CameraMove.MinimumX, _targetMinX, _cameraMove.CameraMove.SpeedTransition * Time.deltaTime);
+        	_cameraMove.CameraMove.CurrentAngle.Maximum = Mathf.Lerp(_cameraMove.CameraMove.CurrentAngle.Maximum, _targetMaxX, _cameraMove.CameraMove.SpeedTransition * Time.deltaTime);
+        	_cameraMove.CameraMove.CurrentAngle.Minimum = Mathf.Lerp(_cameraMove.CameraMove.CurrentAngle.Minimum, _targetMinX, _cameraMove.CameraMove.SpeedTransition * Time.deltaTime);
         }
         
         public void Init(Transform character, MovementCameraData cameraData)
         {
         	_cameraMove = cameraData;
         	
-        	_targetMaxX = _cameraMove.CameraMove.MaximumX;
-            _targetMinX = _cameraMove.CameraMove.MinimumX;
+        	_targetMaxX = _cameraMove.CameraMove.DefoultAngle.Maximum;
+            _targetMinX = _cameraMove.CameraMove.DefoultAngle.Minimum;
             
             _characterTargetRot = character.localRotation;
             _cameraTargetRot = cameraData.Camera.localRotation;
@@ -53,8 +53,8 @@ namespace Player
 
             _cameraTargetRot = ClampRotationAroundXAxis (_cameraTargetRot);
 
-            character.localRotation = Quaternion.Slerp (character.localRotation, _characterTargetRot, _cameraMove.CameraMove.SmoothTime * Time.deltaTime);
-            _cameraMove.Camera.localRotation = Quaternion.Slerp ( _cameraMove.Camera.localRotation, _cameraTargetRot, _cameraMove.CameraMove.SmoothTime * Time.deltaTime);
+            character.localRotation = Quaternion.Slerp (character.localRotation, _characterTargetRot, _cameraMove.CameraMove.TimeInterpolateRotation * Time.deltaTime);
+            _cameraMove.Camera.localRotation = Quaternion.Slerp ( _cameraMove.Camera.localRotation, _cameraTargetRot, _cameraMove.CameraMove.TimeInterpolateRotation * Time.deltaTime);
         }
         
         private Quaternion ClampRotationAroundXAxis(Quaternion q)
@@ -66,7 +66,7 @@ namespace Player
 
             float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan (q.x);
 
-            angleX = Mathf.Clamp (angleX, _cameraMove.CameraMove.MinimumX, _cameraMove.CameraMove.MaximumX);
+            angleX = Mathf.Clamp (angleX, _cameraMove.CameraMove.DefoultAngle.Minimum, _cameraMove.CameraMove.DefoultAngle.Maximum);
 
             q.x = Mathf.Tan (0.5f * Mathf.Deg2Rad * angleX);
 

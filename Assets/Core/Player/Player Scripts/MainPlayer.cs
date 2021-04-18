@@ -8,35 +8,25 @@ namespace Player
 {
 	public class MainPlayer : MonoBehaviour
 	{	
-		[Header("Player Move Settings")]
+		[SerializeField] private DebugParser _debug;
+		
+		[Space]
     	[SerializeField] private MovementPlayerData _defoultMovementPlayer = new MovementPlayerData();
-    	
-    	[Header("Camera Settings")]
+    	[Space]
     	[SerializeField] private MovementCameraData _defoultMovementCamera = new MovementCameraData();
-    	
-    	[Header("Player Sound")]
+    	[Space]
 		[SerializeField] private PlayerSound _sound;
     	
-    	[Header("Player Move")]
-		[SerializeField] private PlayerMoveController _move;
-		
-		[Header("Camera Move")]
-		[SerializeField] private CameraMoveController _cameraMove;
-		
-		[Header("Endurance Player")]
+		[Header("Scripts")]
+		[SerializeField] private PlayerMoveController _move;	
+		[SerializeField] private CameraMoveController _cameraMove;	
 		[SerializeField] private EndurancePlayer _endurance;
-		
-		[Header("Take Object")]
-		[SerializeField] private TakeObject _takeObject;
-
-		
-		[Header("Player Steps")]
-		[SerializeField] private PlayerSteps _steps;
-		
-		[Header("Physics Interaction Small Object")]
+		[SerializeField] private TakeObject _takeObject;	
+		[SerializeField] private PlayerSteps _playerSteps;
 		[SerializeField] private PhysicsInteractionSmallObject _smallObjects;
 		
 		private MouseLook _mouseLook = new MouseLook();
+		private EditPlayerMovementData _editPlayerMovementData = new EditPlayerMovementData();
 				
 		private MovementPlayerData _editMovementPlayer = new MovementPlayerData();
     	private MovementCameraData _editMovementCamera = new MovementCameraData(); 	
@@ -46,20 +36,22 @@ namespace Player
 			InitPlayerData();
 			InitCameraData();
 			
+			
 			// When you Init() then ADD to InitData inizialszation
 			_mouseLook.Init(transform , _editMovementCamera); 
+			_editPlayerMovementData.Init(_editMovementPlayer);
 			
 			_move.Init(_editMovementPlayer, _editMovementCamera, _sound, _endurance);
 			
 			_cameraMove.Init(_editMovementPlayer, _editMovementCamera, _mouseLook);
 			
-			_steps.Init(_editMovementPlayer, _sound);
+			_playerSteps.Init(_editMovementPlayer, _sound);
 			
 			_smallObjects.Init(_editMovementPlayer);
 			
 			_endurance.Init(_editMovementPlayer);
 			
-			_takeObject.Init(_mouseLook, _endurance, _editMovementPlayer, _defoultMovementPlayer);
+			_takeObject.Init(_mouseLook, _endurance, _editPlayerMovementData, _editMovementPlayer);
 		}
 		
 		private void InitPlayerData()
@@ -73,6 +65,7 @@ namespace Player
 			_editMovementPlayer.State = _defoultMovementPlayer.State;
 			_editMovementPlayer.SpeedsSettings = _defoultMovementPlayer.SpeedsSettings;
 			_editMovementPlayer.Step = _defoultMovementPlayer.Step;
+			_editMovementPlayer.BlockMovement = _defoultMovementPlayer.BlockMovement;
 		}
 		
 		private void InitCameraData()
@@ -87,6 +80,11 @@ namespace Player
 		private void Awake()
 		{
 			InitScripts();
+		}
+		
+		private void Update()
+		{
+			_debug.UpdateInfo(_editMovementCamera.CameraMove, _editMovementPlayer.Speeds);
 		}
 	}
 }

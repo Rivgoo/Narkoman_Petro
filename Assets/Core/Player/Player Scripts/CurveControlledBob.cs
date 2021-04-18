@@ -23,7 +23,12 @@ namespace Player
         private float _time;
         
         private Vector3 _originalCameraPosition;
-
+		
+        /// <summary>
+        /// Set Initial values
+        /// </summary>
+        /// <param name="camera">Start Camera Position</param>
+        /// <param name="bobBaseInterval">Bob Base Interval</param>
         public void Setup(Transform camera, float bobBaseInterval)
         {
         	_currentBob = _stay;
@@ -31,6 +36,10 @@ namespace Player
             _originalCameraPosition = camera.localPosition;
         }
 		
+        /// <summary>
+        /// Set Current Type Bob
+        /// </summary>
+        /// <param name="type">Type Bob</param>
         public void SetTypeBob(TypeBob type)
         {
         	if (type == TypeBob.Stay)
@@ -52,14 +61,20 @@ namespace Player
         	
         	_time = _currentBob.AnimatinCurve[_currentBob.AnimatinCurve.length - 1].time;
         }
-
-        public Vector3 DoHeadBob(float speed)
+		
+        /// <summary>
+        /// Play Animation Move Camera
+        /// </summary>
+        /// <param name="speed">Speed Playing</param>
+        /// <returns>Next Posotin Camera</returns>
+        public Vector3 PlayHeadBob(float speed)
         {
         	float xPos = _originalCameraPosition.x + (_currentBob.AnimatinCurve.Evaluate(_cyclePositionX) * _currentBob.BobRangeX);
         	float yPos = _originalCameraPosition.y + (_currentBob.AnimatinCurve.Evaluate(_cyclePositionY) * _currentBob.BobRangeY);
         	float zPos = _originalCameraPosition.z + (_currentBob.AnimatinCurve.Evaluate(_cyclePositionZ) * _currentBob.BobRangeZ);
 			
         	var cyclePosition = (speed * Time.fixedDeltaTime) / _bobBaseInterval;
+        	
             _cyclePositionX += cyclePosition * _currentBob.AccelerationX;
             _cyclePositionY += cyclePosition * _currentBob.AccelerationY;
 			_cyclePositionZ += cyclePosition * _currentBob.AccelerationZ;            

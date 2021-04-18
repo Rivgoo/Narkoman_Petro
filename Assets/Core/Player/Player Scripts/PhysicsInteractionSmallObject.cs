@@ -6,8 +6,6 @@ namespace Player
 	public class PhysicsInteractionSmallObject : MonoBehaviour
 	{
 		private MovementPlayerData _playerData;
-		
-		private float _currentForce;
 			
 		public void Init(MovementPlayerData playerData)
 		{
@@ -20,20 +18,8 @@ namespace Player
 				   
 	         if (body == null || hit.moveDirection.y < -0.3f) return;
 	         
-	         UpdateCurrentForce();
 	         var pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-	         body.AddForce(pushDir * _currentForce, ForceMode.Force);
-	    }
-	    
-	    private void UpdateCurrentForce()
-	    {
-	    	if (_playerData.State.IsMovePlayer || _playerData.State.IsJumping)
-	    	{
-	    		_currentForce = 0;
-	    		return;
-	    	}
-	    	
-	    	_currentForce = _playerData.Physic.ForceSmallObject;
+	         body.AddForce(pushDir * _playerData.Physic.ForceSmallObject, ForceMode.Force);
 	    }
 	}
 }
