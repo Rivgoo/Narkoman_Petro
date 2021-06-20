@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Player
+namespace Core.Player
 {
-	[Serializable]
-    [SerializeField]
-	public class PlayerSound
+	public class PlayerSound : MonoBehaviour
 	{
 		[Header("Audio Source")]
         [SerializeField] private AudioSource AudioSource;

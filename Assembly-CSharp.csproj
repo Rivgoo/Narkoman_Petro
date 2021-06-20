@@ -47,38 +47,65 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Core\Attribute\ReadOnlyAttribute.cs" />
-     <Compile Include="Assets\Core\Attribute\ReadOnlyDrawer.cs" />
-     <Compile Include="Assets\Core\Demo\DebugParser.cs" />
+     <Compile Include="Assets\Core\Camera\Effects\CurveControlledBob.cs" />
+     <Compile Include="Assets\Core\Camera\Effects\JumpControlledBob.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\BobData.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\BobTypes.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\CameraSettings.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\JumpBob.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\Movement.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\ShakeCamera.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Data\Vector2Angle.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\MouseLook.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\Mover.cs" />
      <Compile Include="Assets\Core\Demo\ReloadLevelKeyDown.cs" />
-     <Compile Include="Assets\Core\Player\Data\EnduranceData.cs" />
-     <Compile Include="Assets\Core\Player\Data\MovementCameraData.cs" />
-     <Compile Include="Assets\Core\Player\Data\MovementPlayerData.cs" />
-     <Compile Include="Assets\Core\Player\Effects\EditPlayerMovementData.cs" />
-     <Compile Include="Assets\Core\Player\Input\InputKeys.cs" />
-     <Compile Include="Assets\Core\Player\Object\DestroyObjectEffect.cs" />
-     <Compile Include="Assets\Core\Player\Object\DoorOpen.cs" />
-     <Compile Include="Assets\Core\Player\Object\DoorRotation.cs" />
-     <Compile Include="Assets\Core\Player\Object\EditCenterOfMass.cs" />
-     <Compile Include="Assets\Core\Player\Object\FragmentDestroyPhysic.cs" />
-     <Compile Include="Assets\Core\Player\Object\IPhysicObject.cs" />
-     <Compile Include="Assets\Core\Player\Object\PhysicDestroyingObject.cs" />
-     <Compile Include="Assets\Core\Player\Object\PhysicObjectDefoult.cs" />
-     <Compile Include="Assets\Core\Player\Object\SoundInteractionObjects.cs" />
-     <Compile Include="Assets\Core\Player\Object\TakeObject.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\CameraMoveController.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\CurveControlledBob.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\EndurancePlayer.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\LerpControlledBob.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\MainPlayer.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\MouseLook.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\PhysicsInteractionSmallObject.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\PlayerMoveController.cs" />
-     <Compile Include="Assets\Core\Player\Player Scripts\PlayerSteps.cs" />
+     <Compile Include="Assets\Core\Game\QuitGame.cs" />
+     <Compile Include="Assets\Core\Input\KeysInput.cs" />
+     <Compile Include="Assets\Core\Input\MouseInput.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\CustomCentreOfMass.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\EditCenterOfMass.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\ObjectMover.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Complex.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\ComplexWithDestroyAndPlayerEffects.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\ComplexWithPlayerEffects.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\ComplexWithDestroy.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\Destroyed.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\FragmentsDestroyed.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\IPhysicObject.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Simple.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\PlayerEffects.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\TakerObject.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Croucher.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\BlockingMovement.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\Crouch.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\Gravity.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\Movement.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\MovementPlayerData.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\PhysicalInteractionWithObject.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\PlayerMovement.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\PlayerMovementStates.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\PlayerPhysic.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\SpeedSettings.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\SpeedsValue.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\StateMovement.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Data\Step.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Jumper.cs" />
+     <Compile Include="Assets\Core\Player\Movement\Mover.cs" />
+     <Compile Include="Assets\Core\Player\Movement\StepsSystem.cs" />
+     <Compile Include="Assets\Core\Player\Physic\InteractionSmallObject.cs" />
+     <Compile Include="Assets\Core\Player\Physic\PhysicalInteractionWithPlayer.cs" />
+     <Compile Include="Assets\Core\Player\Physic\StandartInteraction.cs" />
      <Compile Include="Assets\Core\Player\Sound\PlayerSound.cs" />
      <Compile Include="Assets\Core\Player\UI\ShowInfoBarPlayer.cs" />
+     <Compile Include="Assets\Core\Player\Сharacteristics\EnduranceData.cs" />
+     <Compile Include="Assets\Core\Player\Сharacteristics\EndurancePlayer.cs" />
      <Compile Include="Assets\Core\SettingsGame\SettingsPhysic.cs" />
      <Compile Include="Assets\Core\Time\MainTimer.cs" />
      <Compile Include="Assets\Core\Time\UIMainTimer.cs" />
+     <Compile Include="Assets\Core\UI\Main\IPanel.cs" />
+     <Compile Include="Assets\Core\UI\Main\ShowerPanels.cs" />
+     <Compile Include="Assets\Core\UI\Main\StandartPanel.cs" />
+     <Compile Include="Assets\Core\Utility\FPSCounter.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -243,10 +270,6 @@
  <Reference Include="UnityEngine.VR">
  <HintPath>E:/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{086CEBD9-7366-1CC2-65D9-487E97B6D915}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

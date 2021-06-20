@@ -101,11 +101,13 @@
      <None Include="Assets\Time of Day\Assets\Shaders\TOD_Clouds.cginc" />
      <None Include="Assets\Material\Materials\Demo\Glas.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Bloom.shader" />
+     <None Include="Assets\Shaders\PBRShader.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\VectorscopeRender.shader" />
      <None Include="Assets\Time of Day\Assets\Shaders\Clear Alpha.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\EyeAdaptation.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ColorGrading.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\AmbientOcclusion.cginc" />
+     <None Include="Assets\Shaders\PBRLib.cginc" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\WaveformCompute.compute" />
      <None Include="Assets\Time of Day\Assets\Shaders\PP Shadows.shader" />
  <Reference Include="UnityEngine.UI">

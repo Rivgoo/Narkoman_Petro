@@ -1,3 +1,3 @@
 ﻿using UnityEngine;
 
-internal class ReadOnlyAttribute : PropertyAttribute{}
+public class ReadOnlyAttribute : PropertyAttribute{}
