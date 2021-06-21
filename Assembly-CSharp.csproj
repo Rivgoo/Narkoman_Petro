@@ -73,7 +73,6 @@
      <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\FragmentsDestroyed.cs" />
      <Compile Include="Assets\Core\PhysicSystem\Objects\IPhysicObject.cs" />
      <Compile Include="Assets\Core\PhysicSystem\Objects\Simple.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\PlayerEffects.cs" />
      <Compile Include="Assets\Core\PhysicSystem\TakerObject.cs" />
      <Compile Include="Assets\Core\Player\Movement\Croucher.cs" />
      <Compile Include="Assets\Core\Player\Movement\Data\BlockingMovement.cs" />
