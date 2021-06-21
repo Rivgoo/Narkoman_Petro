@@ -100,6 +100,7 @@
      <Compile Include="Assets\Core\Player\Сharacteristics\EnduranceData.cs" />
      <Compile Include="Assets\Core\Player\Сharacteristics\EndurancePlayer.cs" />
      <Compile Include="Assets\Core\SettingsGame\SettingsPhysic.cs" />
+     <Compile Include="Assets\Core\Sound\PlayerShockSounds.cs" />
      <Compile Include="Assets\Core\Time\MainTimer.cs" />
      <Compile Include="Assets\Core\Time\UIMainTimer.cs" />
      <Compile Include="Assets\Core\UI\Main\IPanel.cs" />
