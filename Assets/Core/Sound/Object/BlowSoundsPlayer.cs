@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 
-namespace Core.Sound
+namespace Core.Sound.Object
 {
-    public class PlayerShockSounds : MonoBehaviour
+    [RequireComponent(typeof(Collider))]
+    public class BlowSoundsPlayer : MonoBehaviour
     {
         [SerializeField]
         private float _minVelocityForPlaySound;
-
-        [SerializeField]
-        private float _maxVelocityForPlaySound;
 
         [Space]
         [SerializeField]
@@ -19,8 +17,7 @@ namespace Core.Sound
 
         private void OnCollisionEnter(Collision collision)
         {
-            if(collision.relativeVelocity.magnitude > _minVelocityForPlaySound &&
-                collision.relativeVelocity.magnitude < _maxVelocityForPlaySound)
+            if(collision.relativeVelocity.magnitude > _minVelocityForPlaySound)
             {
                 int index = Random.Range(0, _sounds.Length);
 
@@ -29,4 +26,4 @@ namespace Core.Sound
             }
         }
     }
-}
+}                                                                
