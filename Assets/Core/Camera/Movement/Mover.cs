@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Keys = PlayerInput.KeysInput.CheckMovementKey; 
+using InputKeys = Core.InputSystem.KeyboardInput; 
 using Random = UnityEngine.Random;
 using Core.Player.Movement;
 using Core.Player.Movement.Data;
@@ -39,7 +39,23 @@ namespace Core.Camera.Movement
             	HideCursor();
             }
         }
-    	
+
+        private void UpdateTargetPositionWhenIsGrounded(float shakeSpeed)
+        {
+            PlayHeadBob(shakeSpeed);
+
+            _targetCameraPosition = _cameraMovement.Camera.localPosition;
+            // Set Jump Offset
+            _targetCameraPosition.y = _cameraMovement.Camera.localPosition.y - _cameraMovement.JumpShake.Offset;
+        }
+
+        private void UpdateTargetPositionWhenIsNotGrounded(float shakeSpeed)
+        {
+            _targetCameraPosition = Vector3.Lerp(_targetCameraPosition, _cameraMovement.Camera.localPosition, shakeSpeed);
+            // Set Jump Offset
+            _targetCameraPosition.y = _cameraMovement.OriginalCameraPosition.y - _cameraMovement.JumpShake.Offset;
+        }
+
     	private void UpdateCameraPosition()
         {
             _targetCameraPosition = Vector3.zero;
@@ -49,21 +65,14 @@ namespace Core.Camera.Movement
             if (!_states.States.Risesing)
             {
                 if (_playerMovement.Movement.CharacterController.isGrounded)
-	            {   
-	            	PlayHeadBob(shakeSpeed);
-	            	
-	                _targetCameraPosition =  _cameraMovement.Camera.localPosition;
-	                // Set Jump Offset
-	                _targetCameraPosition.y = _cameraMovement.Camera.localPosition.y - _cameraMovement.JumpShake.Offset;
-	            }
-	            else //If Player Jumping
 	            {
-	            	_targetCameraPosition = Vector3.Lerp(_targetCameraPosition, _cameraMovement.Camera.localPosition, shakeSpeed);
-	            	 // Set Jump Offset
-	                _targetCameraPosition.y = _cameraMovement.OriginalCameraPosition.y - _cameraMovement.JumpShake.Offset;
+                    UpdateTargetPositionWhenIsGrounded(shakeSpeed);
+	            }
+	            else
+	            {
+	            	UpdateTargetPositionWhenIsNotGrounded(shakeSpeed);
 	            }
             }
-
 
             // Add crouch vector
             _targetCameraPosition += _cameraMovement.Shake.CrouchVector;
@@ -71,10 +80,14 @@ namespace Core.Camera.Movement
             //Clamp offset value
             _targetCameraPosition = ClampTargetCameraPosition(_targetCameraPosition);
 
-            // Final moving the camera
-            _cameraMovement.Camera.localPosition = Vector3.Lerp(_cameraMovement.Camera.localPosition, _targetCameraPosition, shakeSpeed);
+           MoveCamera(_targetCameraPosition, shakeSpeed);
         }
-			
+
+        private void MoveCamera(Vector3 targetPosition, float speed)
+        {
+            _cameraMovement.Camera.localPosition = Vector3.Lerp(_cameraMovement.Camera.localPosition, _targetCameraPosition, speed);
+        }
+
     	private void PlayHeadBob(float lerpSpeed)
     	{
     		float speedHeadBob = 1;
@@ -99,22 +112,7 @@ namespace Core.Camera.Movement
     	
     	private void ChangeTypeHeadBob()
         {
-        	if (!_states.States.Moving)
-        	{
-        		_cameraMovement.Shake.HeadBob.SetTypeBob(TypeBob.Stay);
-        	} 
-        	else if (_states.States.Crouching)
-        	{
-        		_cameraMovement.Shake.HeadBob.SetTypeBob(TypeBob.Crouch);
-        	} 
-        	else if (_states.States.Walking)
-        	{
-        		_cameraMovement.Shake.HeadBob.SetTypeBob(TypeBob.Walk);
-        	} 
-        	else if (_states.States.Running) 
-        	{
-        		_cameraMovement.Shake.HeadBob.SetTypeBob(TypeBob.Run);
-        	} 
+            _cameraMovement.Shake.HeadBob.SetTypeBob(_states.States.CurrentTypeMovement);
         }
 		
 		private void Update()

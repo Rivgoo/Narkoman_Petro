@@ -1,5 +1,5 @@
 using System;
-using Input = PlayerInput.MouseInput; 
+using Core.InputSystem; 
 using UnityEngine;
 using Core.Camera.Movement.Data;
 
@@ -7,6 +7,10 @@ namespace Core.Camera.Movement
 {
 	public class MouseLook : MonoBehaviour
     {
+        [SerializeField]
+        private MouseInput _input;
+
+        [Space]
 		[SerializeField] private CameraSettings _cameraMove;
 		[Space]
 		[SerializeField] private Transform _player;
@@ -19,26 +23,26 @@ namespace Core.Camera.Movement
 		
         public static void AddOffsetValueRatation(Vector2Angle values)
         {
-        	_targetMaxX -= values.Maximum;
-        	_targetMinX += values.Minimum;
+        	_targetMaxX -= values.Down;
+        	_targetMinX += values.Top;
         }
         
         public static void SubtractOffsetValueRatation(Vector2Angle values)
         {
-        	_targetMaxX += values.Maximum;
-        	_targetMinX -= values.Minimum;
+        	_targetMaxX += values.Down;
+        	_targetMinX -= values.Top;
         }
         
         private void UpdateMaxValueRotation()
         {
-        	_cameraMove.Move.CurrentAngle.Maximum = Mathf.Lerp(_cameraMove.Move.CurrentAngle.Maximum, _targetMaxX, _cameraMove.Move.SpeedTransition * Time.deltaTime);
-        	_cameraMove.Move.CurrentAngle.Minimum = Mathf.Lerp(_cameraMove.Move.CurrentAngle.Minimum, _targetMinX, _cameraMove.Move.SpeedTransition * Time.deltaTime);
+        	_cameraMove.Move.CurrentAngle.Down = Mathf.Lerp(_cameraMove.Move.CurrentAngle.Down, _targetMaxX, _cameraMove.Move.SpeedTransition * Time.deltaTime);
+        	_cameraMove.Move.CurrentAngle.Top = Mathf.Lerp(_cameraMove.Move.CurrentAngle.Top, _targetMinX, _cameraMove.Move.SpeedTransition * Time.deltaTime);
         }
 
         private void LookRotation()	
         {
-        	float yRot = Input.GetXAxes() * _cameraMove.Move.XSensitivity;
-        	float xRot = Input.GetYAxes() * _cameraMove.Move.YSensitivity;
+        	float yRot = _input.GetXAxes() * _cameraMove.Move.XSensitivity;
+        	float xRot = _input.GetYAxes() * _cameraMove.Move.YSensitivity;
 
             _characterTargetRot *= Quaternion.Euler (0f, yRot, 0f);
             _cameraTargetRot *= Quaternion.Euler (-xRot, 0f, 0f);
@@ -59,7 +63,7 @@ namespace Core.Camera.Movement
             float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan (q.x);
 			
             angleX = Mathf.Clamp(angleX, _targetMinX, _targetMaxX);
-            angleX = Mathf.Clamp (angleX, _cameraMove.Move.DefoultAngle.Minimum, _cameraMove.Move.DefoultAngle.Maximum);
+            angleX = Mathf.Clamp (angleX, _cameraMove.Move.DefoultAngle.Top, _cameraMove.Move.DefoultAngle.Down);
 
             q.x = Mathf.Tan (0.5f * Mathf.Deg2Rad * angleX);
 
@@ -79,8 +83,8 @@ namespace Core.Camera.Movement
         
         private void Setup()
         {
-        	_targetMaxX = _cameraMove.Move.DefoultAngle.Maximum;
-            _targetMinX = _cameraMove.Move.DefoultAngle.Minimum;
+        	_targetMaxX = _cameraMove.Move.DefoultAngle.Down;
+            _targetMinX = _cameraMove.Move.DefoultAngle.Top;
             
             _characterTargetRot = _player.localRotation;
             _cameraTargetRot = _cameraMove.Camera.localRotation;

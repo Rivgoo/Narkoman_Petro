@@ -12,11 +12,11 @@ namespace Core.Camera.Movement.Data
         /// <summary>
         /// Minimum angle.
         /// </summary>
-        public float Minimum;
+        public float Top;
 
         /// <summary>
         /// Maxsimum angle.
         /// </summary>
-        public float Maximum;
+        public float Down;
     }
 }

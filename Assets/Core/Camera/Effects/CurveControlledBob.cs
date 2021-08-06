@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Core.Camera.Movement;
 using Core.Camera.Movement.Data;
+using Core.Player.Movement.Data;
 
 namespace Core.Camera.Effects
 {
@@ -22,6 +23,8 @@ namespace Core.Camera.Effects
         private float _time;
         
         private Vector3 _originalCameraPosition;
+
+        private BobData[] _allBobs = new BobData[4];
 		
         /// <summary>
         /// Set initial values.
@@ -35,31 +38,20 @@ namespace Core.Camera.Effects
         	_currentBob = _bobs.Stay;
             _bobBaseInterval = bobBaseInterval;
             _originalCameraPosition = camera.localPosition;
+
+            UpdateBobs();
         }
 		
         /// <summary>
         /// Set current type bob.
         /// </summary>
-        /// <param name="type">Type bob.</param>
-        public void SetTypeBob(TypeBob type)
+        /// <param name="type">Type movement.</param>
+        public void SetTypeBob(TypeMovement type)
         {
-        	if (type == TypeBob.Stay)
-        	{
-        		_currentBob = _bobs.Stay;
-        	}
-        	else if (type == TypeBob.Crouch)
-        	{
-        		_currentBob = _bobs.Crouch;
-        	}
-        	else if (type == TypeBob.Walk)
-        	{
-        		_currentBob = _bobs.Walk;
-        	}
-        	else if (type == TypeBob.Run)
-        	{
-        		_currentBob = _bobs.Run;
-        	}
-        	
+            //UpdateBobs();
+
+        	_currentBob = _allBobs[(int)type];
+
         	_time = _currentBob.AnimatinCurve[_currentBob.AnimatinCurve.length - 1].time;
         }
 		
@@ -95,13 +87,13 @@ namespace Core.Camera.Effects
             
             return new Vector3(xPos, yPos, zPos);
         }
-    }
-    
-    /// <summary>
-    /// Types bob for animation the a camera.
-    /// </summary>
-    public enum TypeBob
-    {
-    	Stay, Run, Walk, Crouch
+
+        private void UpdateBobs()
+        {
+            _allBobs[0] = _bobs.Stay;
+            _allBobs[1] = _bobs.Walk;
+            _allBobs[2] = _bobs.Run;
+            _allBobs[3] = _bobs.Crouch;
+        }
     }
 }
