@@ -7,17 +7,21 @@ Value/
 
 Assets/Audio/
 Assets/Audio.meta
-Assets/Material/
-Assets/Material.meta
-Assets/Model/
-Assets/Model.meta
-Assets/Scene/
-Assets/Scene.meta
+Assets/Fonts/
+Assets/Fonts.meta
+Assets/Materials/
+Assets/Materials.meta
+Assets/Models/
+Assets/Models.meta
+Assets/Textures/
+Assets/Textures.meta
+Assets/Scenes/
+Assets/Scenes.meta
 Assets/PostProcessing/
 Assets/PostProcessing.meta
 Assets/Prefabs/
 Assets/Prefabs.meta
-Assets/Standard Assets/
-Assets/Standard Assets.meta
 Assets/Time of Day
 Assets/Time of Day.meta
+Assets/StreamingAssets
+Assets/StreamingAssets.meta

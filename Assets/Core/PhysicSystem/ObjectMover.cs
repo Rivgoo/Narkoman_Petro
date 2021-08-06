@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
-using Core.Player.Movement;
 using Core.PhysicSystem.Objects;
 using Core.Player.Movement.Data;
-using Core.Player.Characteristics;
 
 namespace Core.PhysicSystem
 {
 	public class ObjectMover : MonoBehaviour
 	{
+        [SerializeField]
+        private Vector3 _normalPosition;
+
+        [Space]
 		[SerializeField] 
         private Transform _targetObjectPosition;
 
@@ -17,9 +19,6 @@ namespace Core.PhysicSystem
 		[SerializeField] 
         private PlayerMovement _playerMoveData;
 
-        [SerializeField]
-        private EndurancePlayer _endurance;
-
 		private IPhysicObject _physicObject;
 		
 		private void Take(IPhysicObject physicObject)
@@ -27,34 +26,29 @@ namespace Core.PhysicSystem
 			_physicObject = physicObject; 
 			_targetObjectPosition.position = physicObject.GetObjectPosition();
 		}
-
-        private void UpdatePointCollisionWithObject(Vector3 pointCollisionWithObject)
-        {
-            _physicObject.ChangeCentreOfMass(pointCollisionWithObject);
-        }
 		
-		private void ThrowHard()
+		private void ThrowObject()
 		{
-			_physicObject.ThrowHard(_targetObjectPosition.position);
+			_physicObject.ThrowObject(_targetObjectPosition.position);
 		}
 		
-		private void ThowAway()
+		private void PutObject()
 		{
-			_physicObject.ThrowAway(_targetObjectPosition.position);
+			_physicObject.PutObject(_targetObjectPosition.position);
 		}
 		
 		private void Move()
 		{
-			if (_physicObject != null)
+            if(_physicObject != null && TakerObject.IsKeeping)
 			{			
-				if (TakerObject.IsTaking)
-				{
-					_physicObject.UpdateDirection(_targetObjectPosition.position, _playerMoveData.SpeedsValue.Current);
-					_physicObject.Move();
-                    _physicObject.UpdateEffectsWhenMove(_endurance);
-				}
+               _physicObject.Move(_targetObjectPosition.position, _playerMoveData.SpeedsValue.Current);
 			}
 		}
+
+        private void NormalizePosition()
+        {
+            _targetObjectPosition.localPosition = _normalPosition;
+        }
 		
 		private void FixedUpdate()
 		{
@@ -63,16 +57,16 @@ namespace Core.PhysicSystem
 		
 		private void Start()
 		{
-			SubscribeEventThrow();
+			SubscribeTakerEvent();
 		}
 		
-		private void SubscribeEventThrow()
+		private void SubscribeTakerEvent()
 		{
-			_taker.ThrewAway += ThowAway;
-			_taker.ThrewHard += ThrowHard;
+			_taker.PutObject += PutObject;
+			_taker.ThrewObject += ThrowObject;
 			_taker.Taked += Take;
 			_taker.ResettingTargetPhysicObject += ResetTargetPhysicObject;
-            _taker.UpdatedpointCollisionWithObject += UpdatePointCollisionWithObject;
+            _taker.NormalizePositionToObject += NormalizePosition;
 		}
 		
 		private void ResetTargetPhysicObject()

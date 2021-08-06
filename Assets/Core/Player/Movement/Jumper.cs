@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
-using Keys = PlayerInput.KeysInput.CheckMovementKey; 
-using Random = UnityEngine.Random;
 using Core.Player.Characteristics;
 using Core.Camera.Movement;
 using Core.Player.Movement.Data;
 using Core.Camera.Movement.Data;
+using Core.InputSystem;
+using Random = UnityEngine.Random;
 
 namespace Core.Player.Movement
 {
 	public class Jumper : MonoBehaviour
-	{
+    {
+        [SerializeField]
+        private KeyboardInput _inputKeys;
+
+        [Space]
 		[SerializeField] 
         private PlayerMovement _movementPlayer;
 
@@ -24,7 +28,7 @@ namespace Core.Player.Movement
 
     	[Space]
        	[SerializeField] 
-        private PlayerSound _sound;
+        private Sound.Player.MovementSoundsPlayer _soundsPlayer;
 
         [SerializeField]
         private EndurancePlayer _endurance;  
@@ -54,60 +58,66 @@ namespace Core.Player.Movement
         }
 		
         private void EndJumping()
-        { 
+        {
         	//previously grounded + is grounded + not player rises + not crouching
             if (!_state.States.PreviouslyGrounded && _movementPlayer.Movement.CharacterController.isGrounded && !_state.States.Risesing && !_state.States.Crouching)
             {
                 StartCoroutine(_movementCamera.JumpShake.PlayBobCycle());
                 
-                PlayLandingSound();
                 UpdateStep();
                 
                 _movementPlayer.Movement.Direction.y = 0f;
 
                 _state.States.Jumping = false;
+
+                _soundsPlayer.PlayLanding();
             }
         }
-		
-        private void PlayLandingSound()
-        {
-        	_sound.PlayLandingSound();
-        } 
-		
+
         private void UpdateStep()
         {
         	_movementPlayer.Step.NextStep = _movementPlayer.Step.StepCycle + .5f;
         }
-        
+
+        private void DoJump()
+        {
+            _movementPlayer.Movement.Direction.y = -_playerPhysic.Gravity.StickToGroundForce;
+
+            if(_isJump)
+            {
+                _movementPlayer.Movement.Direction.y = _movementPlayer.SpeedsValue.Jump;
+
+                _isJump = false;
+                _state.States.Jumping = true;
+
+                _endurance.SubtractEnduranceOfJump();
+
+                _soundsPlayer.PlayJump();
+            }
+        }
+
+        private void DoLanding()
+        {
+            if(_movementPlayer.Movement.Collision == CollisionFlags.Above)
+            {
+                _movementPlayer.Movement.Direction -= new Vector3(0, 0.8f, 0);
+            }
+            else
+            {
+                _movementPlayer.Movement.Direction += Physics.gravity * _playerPhysic.Gravity.GravityForce * Time.fixedDeltaTime;
+
+            }
+        }
+
         private void Jump()
         {
         	if (_movementPlayer.Movement.CharacterController.isGrounded && _movementPlayer.Movement.Collision != CollisionFlags.Above)
             {
-                _movementPlayer.Movement.Direction.y = -_playerPhysic.Gravity.StickToGroundForce;
-
-                if (_isJump)
-                {
-                    _movementPlayer.Movement.Direction.y = _movementPlayer.SpeedsValue.Jump;
-                    
-                    _sound.PlayJumpSound();
-
-                    _isJump = false;
-                    _state.States.Jumping = true;
-                    
-                    _endurance.SubtractEnduranceOfJump();
-                }
+                DoJump();
             }
             else
             {
-            	if (_movementPlayer.Movement.Collision == CollisionFlags.Above)
-            	{
-            		_movementPlayer.Movement.Direction -= new Vector3(0, 0.8f, 0);
-            	}
-            	else
-            	{
-                    _movementPlayer.Movement.Direction += Physics.gravity * _playerPhysic.Gravity.GravityForce * Time.fixedDeltaTime;
-            
-            	}
+                DoLanding();
             }
         }
         
@@ -119,10 +129,9 @@ namespace Core.Player.Movement
         		// not jumping + not crouching + not player rises
                 if (!_isJump && !_state.States.Crouching && !_state.States.Risesing)
 	            {
-                    _isJump = _endurance.CheckCanJump() && _movementPlayer.Movement.CharacterController.isGrounded;
+                    _isJump = _inputKeys.JumpDown() && _endurance.CheckCanJump() && _movementPlayer.Movement.CharacterController.isGrounded;
 	            }
         	}
         }
-	
 	}
 }

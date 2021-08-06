@@ -11,6 +11,7 @@ namespace Core.Player.Physic
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
+            
             PhysicalInteractionWithPlayer interaction = hit.gameObject.GetComponent<PhysicalInteractionWithPlayer>() as PhysicalInteractionWithPlayer;
 
             if(interaction == null)

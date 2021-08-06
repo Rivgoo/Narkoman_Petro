@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
-using Keys = PlayerInput.KeysInput.CheckMovementKey;
 using Core.Player.Movement;
+using Core.InputSystem;
 using Core.Player.Movement.Data;
 
 namespace Core.Player.Characteristics
 {
 	public class EndurancePlayer : MonoBehaviour
 	{
+        [SerializeField]
+        private KeyboardInput _inputKeys;
+
+        [Space]
 		[SerializeField] private bool _isUseEndurance;
 		
 		[Header("Vizualiation Endurancy")]
@@ -59,7 +63,7 @@ namespace Core.Player.Characteristics
         /// <returns>if can jump.</returns>
 		public bool CheckCanJump()
         {
-			return _endurance > _data.MinValue.Jump && Keys.JumpDown();
+			return _endurance > _data.MinValue.Jump;
         }
         
         /// <summary>
@@ -68,7 +72,7 @@ namespace Core.Player.Characteristics
         /// <returns>if can run.</returns>
        	public bool CheckCanRun() 
         {    	
-       		return _states.States.Running && _endurance > 0 && Keys.Run();
+       		return _states.States.Running && _endurance > 0;
         }
        	
         /// <summary>
@@ -77,11 +81,11 @@ namespace Core.Player.Characteristics
         /// <returns>Is run key stay.</returns>
        	public bool CheckRunKeyIsStay()
         {
-       		if (Keys.RunKeyDown())
+       		if (_inputKeys.RunKeyDown())
         	{
         		return _endurance > _data.MinValue.Run;
         	}     
-       		else if (Keys.RunKeyUp() || _endurance == 0)
+       		else if (_inputKeys.RunKeyUp() || _endurance == 0)
 			{
        			return false;
 			} 

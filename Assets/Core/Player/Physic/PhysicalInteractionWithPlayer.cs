@@ -2,6 +2,7 @@
 using Core.Player.Movement;
 using Core.Player.Movement.Data;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Core.Player.Physic
 {
@@ -18,9 +19,17 @@ namespace Core.Player.Physic
 
         private float[] _forceValues = new float[4];
 
+        private bool _isAddForce = false;
+
         public void AddForce(Vector3 force, TypeMovement typeMovement)
         {
-            _object.AddForce(force * GetForceValue(typeMovement), ForceMode.Force);
+            if(!_isAddForce)
+            {
+                _isAddForce = true;
+                _object.AddForce(force * GetForceValue(typeMovement), ForceMode.Acceleration);
+
+                StartCoroutine(WaitForEndOfFrame());
+            }
         }
 
         public void UpdateForces()
@@ -39,6 +48,15 @@ namespace Core.Player.Physic
         private void Start()
         {
             UpdateForces();
+        }
+
+        private IEnumerator WaitForEndOfFrame()
+        {
+             yield return new WaitForEndOfFrame();
+
+            _isAddForce = false;
+
+            yield break;
         }
     }
 }

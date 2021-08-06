@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Keys = PlayerInput.KeysInput.CheckMovementKey; 
+using Core.InputSystem; 
 using Random = UnityEngine.Random;
 using Core.Player.Characteristics;
 using Core.Player.Movement.Data;
@@ -8,6 +8,10 @@ namespace Core.Player.Movement
 {
 	public class Mover : MonoBehaviour
 	{
+        [SerializeField]
+        private KeyboardInput _inputKeys;
+
+        [Space]
 		[SerializeField] 
         private PlayerMovement _movementPlayer;
 
@@ -61,7 +65,7 @@ namespace Core.Player.Movement
         
         private void CheckWalk()
         {
-            _state.States.Walking = !_endurance.CheckCanRun() && !_state.States.Crouching && !_state.BlockingTypeMovements.Walk;
+            _state.States.Walking = !_inputKeys.Run() && !_endurance.CheckCanRun() && !_state.States.Crouching && !_state.BlockingTypeMovements.Walk;
         }
         
         private void ChooseCurrentTypeSpeed()
@@ -120,8 +124,8 @@ namespace Core.Player.Movement
 
         private void GetPlayerInput()
         {
-        	var verticalAxes = (int)Keys.MoveForward();
-            var horizontalAxes = (int)Keys.MoveRight();
+        	var verticalAxes = (int)_inputKeys.MoveForward();
+            var horizontalAxes = (int)_inputKeys.MoveRight();
             
           	_movementPlayer.Movement.UserInput = new Vector2(horizontalAxes, verticalAxes);
 	        

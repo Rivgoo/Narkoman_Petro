@@ -1,36 +1,55 @@
-﻿using UnityEngine;
-using Mouse = PlayerInput.KeysInput.CheckMouseButton; 
-using PlayerInput;
-using System;
+﻿using System;
+using UnityEngine; 
+using Core.InputSystem;
 using Core.Player.Movement;
 using Core.PhysicSystem.Objects;
 using Core.Player.Movement.Data;
+using Core.Player.Characteristics;
 
 namespace Core.PhysicSystem
 {
 	public class TakerObject : MonoBehaviour
 	{
-		public static bool IsTaking { get; private set; }
+		public static bool IsKeeping { get; private set; }
 		
-		public event Action ThrewAway;
-		public event Action ThrewHard;
+		public event Action PutObject;
+		public event Action ThrewObject;
 		public event Action<IPhysicObject> Taked;
-        public event Action<Vector3> UpdatedpointCollisionWithObject;
 		public event Action ResettingTargetPhysicObject;
-		
-		[SerializeField] private float _maxTakerDistancy;
+        public event Action NormalizePositionToObject;
+
+        [SerializeField]
+        private MouseInput _mouseInput;
+
+        [Space]
+        [SerializeField] 
+        private LayerMask _ignorLayers;
+
+        [Space]
+		[SerializeField] 
+        private float _maxTakerDistancy;
+
 		[Space]
-		[SerializeField] private Core.Player.Characteristics.EndurancePlayer _endurancy;	
-		[SerializeField] private PlayerMovement _playerMoveData;
-		[SerializeField] private Transform _player;
-		
+		[SerializeField]
+        private EndurancePlayer _endurancy;	
+
+		[SerializeField] 
+        private PlayerMovement _playerMoveData;
+
+		[SerializeField]
+        private Transform _player;
+
+        [Space]
+        [SerializeField] [ReadOnly]
 		private IPhysicObject _physicObject;
+
+        private Vector3 _pointCollisionWithObject;
 		
 		private void Update()
 		{
-			if (IsTaking) 
+			if (IsKeeping) 
 			{
-				CheckThrow();
+				CheckInput();
 			}
 			else
 			{
@@ -38,21 +57,27 @@ namespace Core.PhysicSystem
 			}
 		}
 			
-		private bool TryTake(out IPhysicObject physicObject, out Vector3 pointCollisionWithObject)
+		private bool TryTake(out IPhysicObject physicObject)
 		{	
 			var mouseVector = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
 			
 			RaycastHit hit;
-			pointCollisionWithObject = Vector3.zero;
-			
-			if (Physics.Raycast(mouseVector, out hit, _maxTakerDistancy))
+
+            if(Physics.Raycast(mouseVector, out hit, _maxTakerDistancy, _ignorLayers))
 			{
 				physicObject = hit.collider.gameObject.GetComponent(typeof(IPhysicObject)) as IPhysicObject;
 				
-				if ( physicObject != null && physicObject.CheckObjectIsActiveForInteraction(transform))
+				if (physicObject != null)
 				{
-					pointCollisionWithObject = hit.point;
-					return true;
+                    _pointCollisionWithObject = hit.point;
+                    physicObject.SetPointCollision(hit.point);
+
+                    if(physicObject.IsCanTakeObject(_player))
+                    {
+                        ApplyEffects(physicObject);
+
+					    return true;
+                    }
 				}
 			}
 			
@@ -60,49 +85,69 @@ namespace Core.PhysicSystem
 			
 			return false;
 		}
-		
+
+        private void ApplyEffects(IPhysicObject physicObject)
+        {
+            var effectsGroup = physicObject.GetEffects();
+
+            if(effectsGroup.EnduranceSubstruct != null)
+            {
+                effectsGroup.EnduranceSubstruct.Endurance = _endurancy;
+            }
+
+            if(effectsGroup.EditCentreOfMass)
+            {
+                effectsGroup.EditCentreOfMass.TargetCentreOfPosition = _pointCollisionWithObject;
+            }
+        }
+
 		private void CheckTake()
 		{
-			if (Mouse.Down(MouseButtons.RightButton) && _endurancy.CheckIfCanTake())
+			if (_mouseInput.Down(MouseButtons.RightButton) && _endurancy.CheckIfCanTake())
 			{
-				Vector3 pointCollisionWithObject;
-				
-				IsTaking = TryTake(out _physicObject, out pointCollisionWithObject);
-				
-				if (IsTaking)
+                if(TryTake(out _physicObject))
 				{
+                    IsKeeping = true;
+
 					_physicObject.Take();
 				
 					Taked(_physicObject);
-                    UpdatedpointCollisionWithObject(pointCollisionWithObject);
 				}
 			}
 		}
 		
-		private void CheckThrow()
+		private void CheckInput()
 		{
 			if (_physicObject != null)
 			{
-				if (Mouse.Down(MouseButtons.LeftButton))
+                if(_mouseInput.Down(MouseButtons.ScrollLock))
+                {
+                    NormalizePositionToObject.Invoke();
+                }
+
+				if (_mouseInput.Down(MouseButtons.LeftButton))
 				{
-					//Threw Hard = Threw Hard + Threw Away
-					IsTaking = false;
-					ThrewHard();
-					ResettingTargetPhysicObject();
+					ThrewObject();
+                    ResetTaker();
 						
 				}
-				else if(!_physicObject.CheckObjectIsActiveForInteraction(_player) || Mouse.Up(MouseButtons.RightButton) || !_endurancy.CheckIfCanKeep())
+				else if(!_physicObject.IsCanKeepingObject(_player) || _mouseInput.Up(MouseButtons.RightButton) || !_endurancy.CheckIfCanKeep())
 				{
-					IsTaking = false;
-					ThrewAway();
-					ResettingTargetPhysicObject();
+                    PutObject();
+					ResetTaker();
 				}
 			}
 			else
 			{
-				IsTaking = false;
-				ResettingTargetPhysicObject();
+                ResetTaker();
 			}
 		}
+
+        private void ResetTaker()
+        {
+            IsKeeping = false;
+            _physicObject = null;
+            ResettingTargetPhysicObject();
+        }
 	}
 }

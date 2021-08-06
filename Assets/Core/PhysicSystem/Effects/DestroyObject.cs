@@ -1,26 +1,30 @@
-﻿using UnityEngine;
+﻿using Core.PhysicSystem.Objects;
+using UnityEngine;
 
-namespace Core.PhysicSystem.Objects
+namespace Core.PhysicSystem.Effects
 {
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(Rigidbody))]
-    [AddComponentMenu("PhysicObjects/ComplexWithDestroy")]
-    public class ComplexWithDestroy : Complex
+    [AddComponentMenu("PhysicObjectEffects/DestroyObject")]
+    public class DestroyObject : MonoBehaviour
     {
-        [Space]
+        public event System.Action DestroyTheObject;
+
         [SerializeField]
         private float _velocityValueForDestroy;
 
         [SerializeField]
         private Destroyed[] _prefabObjects;
 
+        private bool _isDestroyed = false;
+
         private void OnCollisionEnter(Collision collision)
         {
-            ApplyCollisionSlowingMove();
-
-            if (collision.relativeVelocity.magnitude > _velocityValueForDestroy)
+            if(!_isDestroyed && collision.relativeVelocity.magnitude > _velocityValueForDestroy)
             {
-                CancelCameraRestrictions();
+                _isDestroyed = true;
+
+                DestroyTheObject();
 
                 InstanceDestroyObject();
                 DestroyThis();

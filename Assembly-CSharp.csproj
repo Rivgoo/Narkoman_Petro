@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_5_6_7;UNITY_5_6;UNITY_5;UNITY_64;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;ENABLE_VIDEO;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_32;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_5_6_7;UNITY_5_6;UNITY_5;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;ENABLE_VIDEO;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_32;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;CROSS_PLATFORM_INPUT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -49,6 +49,7 @@
      <Compile Include="Assets\Core\Attribute\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Core\Camera\Effects\CurveControlledBob.cs" />
      <Compile Include="Assets\Core\Camera\Effects\JumpControlledBob.cs" />
+     <Compile Include="Assets\Core\Camera\Movement\CameraState.cs" />
      <Compile Include="Assets\Core\Camera\Movement\Data\BobData.cs" />
      <Compile Include="Assets\Core\Camera\Movement\Data\BobTypes.cs" />
      <Compile Include="Assets\Core\Camera\Movement\Data\CameraSettings.cs" />
@@ -59,20 +60,51 @@
      <Compile Include="Assets\Core\Camera\Movement\MouseLook.cs" />
      <Compile Include="Assets\Core\Camera\Movement\Mover.cs" />
      <Compile Include="Assets\Core\Demo\ReloadLevelKeyDown.cs" />
+     <Compile Include="Assets\Core\Game\DontDestroyOnLoadObject.cs" />
+     <Compile Include="Assets\Core\Game\Load\ILoaderGame.cs" />
+     <Compile Include="Assets\Core\Game\Load\LoadGame.cs" />
+     <Compile Include="Assets\Core\Game\Load\LoaderGame.cs" />
+     <Compile Include="Assets\Core\Game\MenuPostProcessingChanger.cs" />
      <Compile Include="Assets\Core\Game\QuitGame.cs" />
-     <Compile Include="Assets\Core\Input\KeysInput.cs" />
-     <Compile Include="Assets\Core\Input\MouseInput.cs" />
+     <Compile Include="Assets\Core\GameUI\ColorChanger.cs" />
+     <Compile Include="Assets\Core\GameUI\Game\Load\ProgressShower.cs" />
+     <Compile Include="Assets\Core\GameUI\Main\IPanel.cs" />
+     <Compile Include="Assets\Core\GameUI\Main\MainPanelsShower.cs" />
+     <Compile Include="Assets\Core\GameUI\Main\StandartPanel.cs" />
+     <Compile Include="Assets\Core\GameUI\Main\TransitionPanel.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\ClickHandler.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\ClickHandlerGroup.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\Hover\HoverEffectForLetters.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\Hover\HoverHandler.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\Hover\HoveringEffect.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\Hover\StandartHoverEffect.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Button\StandartButton.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Settings\ValueSetting.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Settings\ValueShower.cs" />
+     <Compile Include="Assets\Core\GameUI\Object\Settings\ValueSlider.cs" />
+     <Compile Include="Assets\Core\GameUI\Text\Letter.cs" />
+     <Compile Include="Assets\Core\GameUI\Text\LetterCreator.cs" />
+     <Compile Include="Assets\Core\GameUI\Text\LetterGroup.cs" />
+     <Compile Include="Assets\Core\InputSystem\InputSystemConfigurator.cs" />
+     <Compile Include="Assets\Core\InputSystem\KeyboardInput.cs" />
+     <Compile Include="Assets\Core\InputSystem\MouseInput.cs" />
+     <Compile Include="Assets\Core\InputSystem\PlayerKeys\Keyboard.cs" />
+     <Compile Include="Assets\Core\InputSystem\PlayerKeys\Mouse.cs" />
      <Compile Include="Assets\Core\PhysicSystem\CustomCentreOfMass.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\EditCenterOfMass.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Effects\DestroyObject.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Effects\EditCenterOfMass.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Effects\EffectsComponentGroup.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Effects\EnduranceSubsruct.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Effects\ObjectRotator.cs" />
      <Compile Include="Assets\Core\PhysicSystem\ObjectMover.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\Objects\Complex.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\Objects\ComplexWithDestroyAndPlayerEffects.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\Objects\ComplexWithPlayerEffects.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\ComplexWithDestroy.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Data\CameraRestrictions.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Data\Forces.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Data\MovementData.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\Data\TakeData.cs" />
      <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\Destroyed.cs" />
      <Compile Include="Assets\Core\PhysicSystem\Objects\Destroy\FragmentsDestroyed.cs" />
      <Compile Include="Assets\Core\PhysicSystem\Objects\IPhysicObject.cs" />
-     <Compile Include="Assets\Core\PhysicSystem\Objects\Simple.cs" />
+     <Compile Include="Assets\Core\PhysicSystem\Objects\StandartPhysicObject.cs" />
      <Compile Include="Assets\Core\PhysicSystem\TakerObject.cs" />
      <Compile Include="Assets\Core\Player\Movement\Croucher.cs" />
      <Compile Include="Assets\Core\Player\Movement\Data\BlockingMovement.cs" />
@@ -94,17 +126,18 @@
      <Compile Include="Assets\Core\Player\Physic\InteractionSmallObject.cs" />
      <Compile Include="Assets\Core\Player\Physic\PhysicalInteractionWithPlayer.cs" />
      <Compile Include="Assets\Core\Player\Physic\StandartInteraction.cs" />
-     <Compile Include="Assets\Core\Player\Sound\PlayerSound.cs" />
      <Compile Include="Assets\Core\Player\UI\ShowInfoBarPlayer.cs" />
      <Compile Include="Assets\Core\Player\Сharacteristics\EnduranceData.cs" />
      <Compile Include="Assets\Core\Player\Сharacteristics\EndurancePlayer.cs" />
      <Compile Include="Assets\Core\SettingsGame\SettingsPhysic.cs" />
-     <Compile Include="Assets\Core\Sound\PlayerShockSounds.cs" />
+     <Compile Include="Assets\Core\Sound\Object\BlowSoundsPlayer.cs" />
+     <Compile Include="Assets\Core\Sound\Object\BlowSoundsPlayerForDestroyObject.cs" />
+     <Compile Include="Assets\Core\Sound\Player\FootStepZone.cs" />
+     <Compile Include="Assets\Core\Sound\Player\JumpZone.cs" />
+     <Compile Include="Assets\Core\Sound\Player\MovementSoundsPlayer.cs" />
+     <Compile Include="Assets\Core\Sound\Player\SoundZone.cs" />
      <Compile Include="Assets\Core\Time\MainTimer.cs" />
      <Compile Include="Assets\Core\Time\UIMainTimer.cs" />
-     <Compile Include="Assets\Core\UI\Main\IPanel.cs" />
-     <Compile Include="Assets\Core\UI\Main\ShowerPanels.cs" />
-     <Compile Include="Assets\Core\UI\Main\StandartPanel.cs" />
      <Compile Include="Assets\Core\Utility\FPSCounter.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
@@ -240,7 +273,7 @@
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ScreenSpaceRaytrace.cginc" />
      <None Include="Assets\Time of Day\Assets\Shaders\TOD_Clouds.cginc" />
-     <None Include="Assets\Material\Materials\Demo\Glas.shader" />
+     <None Include="Assets\Materials\DemoMaterials\Materials\Demo\Glas.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Bloom.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\VectorscopeRender.shader" />
      <None Include="Assets\Time of Day\Assets\Shaders\Clear Alpha.shader" />

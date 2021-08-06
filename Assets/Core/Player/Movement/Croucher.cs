@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Keys = PlayerInput.KeysInput.CheckMovementKey; 
+using Core.InputSystem; 
 using Random = UnityEngine.Random;
 using Core.Camera.Movement;
 using Core.Player.Movement.Data;
@@ -10,6 +10,10 @@ namespace Core.Player.Movement
 {
 	public class Croucher : MonoBehaviour
 	{
+        [SerializeField]
+        private KeyboardInput _inputKeys;
+
+        [Space]
 		[SerializeField] 
         private PlayerMovement _playerMovement;
 
@@ -67,13 +71,13 @@ namespace Core.Player.Movement
 		
         private void CheckCrouch()
 	        {
-                if (Keys.CrouchDown() && !_movementStates.States.Jumping && !_movementStates.BlockingTypeMovements.Crouch)
+                if (_inputKeys.CrouchDown() && !_movementStates.States.Jumping && !_movementStates.BlockingTypeMovements.Crouch)
 	        	{
                     _movementStates.States.Crouching = true;
 	        		_playerMovement.Crouch.IsCheckCrouchRaycast = false; 
 	        		return;
 	        	} 
-	        	else if (Keys.CrouchUp())
+	        	else if (_inputKeys.CrouchUp())
 	        	{
 	        		_playerMovement.Crouch.IsCheckCrouchRaycast = true;
 	        	}

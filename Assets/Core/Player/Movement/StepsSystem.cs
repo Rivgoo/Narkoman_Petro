@@ -11,8 +11,8 @@ namespace Core.Player.Movement
         [SerializeField]
         private PlayerMovementStates _state;
 
-        [SerializeField] 
-        private PlayerSound _sound;
+        [SerializeField]
+        private Sound.Player.MovementSoundsPlayer _soundsPlayer;
 		
 		private void ProgressStepCycle() 
         {
@@ -50,7 +50,7 @@ namespace Core.Player.Movement
         {
             if (_movementPlayer.Movement.CharacterController.isGrounded && _state.States.PreviouslyGrounded)
             {
-               _sound.PlayFootStepAudio();
+               _soundsPlayer.PlayFootStep();
             }
         } 
 		

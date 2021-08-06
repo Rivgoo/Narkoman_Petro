@@ -12,6 +12,7 @@ namespace Core.Player.Movement.Data
         /// <summary>
         /// Current type player movement.
         /// </summary>
+        [ReadOnly]
         public TypeMovement CurrentTypeMovement;
 
         /// <summary>

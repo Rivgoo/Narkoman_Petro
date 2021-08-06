@@ -1,23 +1,35 @@
 ﻿using UnityEngine;
 
-namespace Core.PhysicSystem
+namespace Core.PhysicSystem.Effects
 {
 	[RequireComponent(typeof(Rigidbody))]
-	[AddComponentMenu("PlayerPhysic/EditCenterOfMass")]
+    [AddComponentMenu("PhysicObjectEffects/EditCenterOfMass")]
 	public class EditCenterOfMass : MonoBehaviour     
 	{
-		[Header("Rigidbody")]
+        public Vector3 TargetCentreOfPosition
+        {
+            set
+            {
+                _targeCentreOfMass.position = value;
+            }
+        }
+
+        [SerializeField]
+        private bool _editCentreOfMass;
+
+        [Space]
 		[SerializeField] private Rigidbody _rigidbody;
 		
-		[Header("Target Position Center Of Mass")]
 		[SerializeField] private Transform _targeCentreOfMass;
 		
 		private Vector3 _originalCentreOfMass;
 		
-		public void ApplyCentreOfMass(Vector3 targeCentreOfMass)
+		public void ApplyCentreOfMass()
 		{
-			_targeCentreOfMass.position = targeCentreOfMass;
-			_rigidbody.centerOfMass = Vector3.Scale(_targeCentreOfMass.localPosition, transform.localScale);
+            if(_editCentreOfMass)
+            {
+                _rigidbody.centerOfMass = Vector3.Scale(_targeCentreOfMass.localPosition, transform.localScale);
+            }
 		}
 		
 		public void ResetCentreOfMass()
